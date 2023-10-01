@@ -3,8 +3,14 @@ import MessageContainer from "./MessageContainer"
 import SendMessageContainer from "./SendMessageContainer"
 
 class MessageFeed extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+			messages: [], // Initialize data as an empty array
+		}
+	}
+
 	componentDidMount() {
-		console.log("hiiii")
 		fetch("http://localhost:8000/")
 			.then(response => {
 				if (!response.ok) {
@@ -12,9 +18,11 @@ class MessageFeed extends Component {
 				}
 				return response.json()
 			})
-			.then(data => {
+			.then(messages => {
+				console.log("response", messages)
 				// Handle the data here (e.g., update the component state)
-				console.log(data)
+				this.setState({ messages })
+				console.log(this.state)
 			})
 			.catch(error => {
 				console.error("Error fetching data:", error)
@@ -22,11 +30,16 @@ class MessageFeed extends Component {
 	}
 
 	render() {
+		const { messages } = this.state
+		console.log(messages)
+
 		return (
 			<div className="w-full absolute inset-0 flex flex-col-reverse">
 				<SendMessageContainer />
 				<div className=" ">
-					<MessageContainer />
+					{messages.map((message, index) => (
+						<MessageContainer key={index} message={message} />
+					))}
 				</div>
 			</div>
 		)
