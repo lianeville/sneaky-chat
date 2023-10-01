@@ -19,10 +19,9 @@ class MessageFeed extends Component {
 				return response.json()
 			})
 			.then(messages => {
-				console.log("response", messages)
+				console.log("messages", messages)
 				// Handle the data here (e.g., update the component state)
 				this.setState({ messages })
-				console.log(this.state)
 			})
 			.catch(error => {
 				console.error("Error fetching data:", error)
@@ -31,12 +30,11 @@ class MessageFeed extends Component {
 
 	render() {
 		const { messages } = this.state
-		console.log(messages)
 
 		return (
 			<div className="w-full absolute inset-0 flex flex-col-reverse">
 				<SendMessageContainer />
-				<div className=" ">
+				<div>
 					{messages.map((message, index) => (
 						<MessageContainer key={index} message={message} />
 					))}
