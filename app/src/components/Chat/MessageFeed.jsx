@@ -11,7 +11,8 @@ class MessageFeed extends Component {
 	}
 
 	componentDidMount() {
-		fetch("http://localhost:8000/")
+		console.log("http://localhost:8000" + window.location.pathname)
+		fetch("http://localhost:8000" + window.location.pathname)
 			.then(response => {
 				if (!response.ok) {
 					throw new Error("Network response was not ok")

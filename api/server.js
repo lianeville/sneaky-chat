@@ -12,15 +12,13 @@ const client = new MongoClient(uri)
 
 app.use(cors())
 
-async function getMessages() {
+async function getMessages(sessionId) {
 	try {
 		await client.connect()
-		console.log("Connected to MongoDB")
-
 		const db = client.db("Chat-App")
 		const messageCollection = db.collection("Messages")
 		const usersCollection = db.collection("Users")
-		const sessionId = new ObjectId("65182b51e8c3908380a5c36b")
+		sessionId = new ObjectId(sessionId)
 
 		let sessionMessages = messageCollection.find({
 			session_id: sessionId,
@@ -48,9 +46,28 @@ async function getUsers(messages, usersCollection) {
 	return messages
 }
 
-app.get("/", async (req, res) => {
-	const messages = await getMessages()
+async function getSessions() {
+	try {
+		await client.connect()
+		const db = client.db("Chat-App")
+		const sessionCollection = db.collection("Sessions")
+		let sessions = sessionCollection.find({})
+		sessions = await sessions.toArray()
+
+		return sessions
+	} catch (error) {
+		console.error("Error connecting to MongoDB:", error)
+	}
+}
+
+app.get("/session/:sessionId", async (req, res) => {
+	const messages = await getMessages(req.params.sessionId)
 	res.json(messages)
+})
+
+app.get("/", async (req, res) => {
+	const sessions = await getSessions()
+	res.json(sessions)
 })
 
 app.listen(port, () => {
