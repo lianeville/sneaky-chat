@@ -1,6 +1,8 @@
 import { Component } from "react"
 import ChatSession from "./ChatSession"
 
+const baseURL = "http://localhost:8000"
+
 class SessionBoard extends Component {
 	constructor(props) {
 		super(props)
@@ -10,7 +12,7 @@ class SessionBoard extends Component {
 	}
 
 	componentDidMount() {
-		fetch("http://localhost:8000/")
+		fetch(baseURL)
 			.then(response => {
 				if (!response.ok) {
 					throw new Error("Network response was not ok")

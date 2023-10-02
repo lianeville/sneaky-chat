@@ -1,12 +1,12 @@
 const express = require("express")
-const cors = require("cors") // Import the cors middleware
-
+const cors = require("cors")
 const app = express()
 const port = 8000
-
 const { MongoClient, ObjectId } = require("mongodb")
-const uri =
-	"mongodb+srv://lianeville5:u9xKoDoJ0fuPqm89@chat-app.kczrold.mongodb.net/?retryWrites=true&w=majority"
+
+const dotenv = require("dotenv")
+const config = dotenv.config({ path: "../.env" })
+const uri = config.parsed.mongoURI
 
 const client = new MongoClient(uri)
 

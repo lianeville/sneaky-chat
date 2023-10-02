@@ -2,6 +2,8 @@ import { Component } from "react"
 import MessageContainer from "./MessageContainer"
 import SendMessageContainer from "./SendMessageContainer"
 
+const baseURL = "http://localhost:8000"
+
 class MessageFeed extends Component {
 	constructor(props) {
 		super(props)
@@ -11,8 +13,7 @@ class MessageFeed extends Component {
 	}
 
 	componentDidMount() {
-		console.log("http://localhost:8000" + window.location.pathname)
-		fetch("http://localhost:8000" + window.location.pathname)
+		fetch(baseURL + window.location.pathname)
 			.then(response => {
 				if (!response.ok) {
 					throw new Error("Network response was not ok")
