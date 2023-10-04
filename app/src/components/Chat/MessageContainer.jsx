@@ -7,13 +7,15 @@ import PropTypes from "prop-types" // Import PropTypes
 class MessageContainer extends Component {
 	render() {
 		const { message } = this.props
-		console.log(message)
+		const nameStyling = message.user._id ? "" : "italic"
 		return (
 			<div className="bg-slate-300 flex p-2 my-2 items-center">
 				<ChatAvatar />
 				<div className="flex flex-col w-full">
 					<div className="flex">
-						<span className="mr-2">{message.user.name}</span>
+						<span className={`mr-2 ${nameStyling}`}>
+							{message.user.name}
+						</span>
 						<ChatTime time={message.created_at} />
 					</div>
 					<span>{message.text_content}</span>

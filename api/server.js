@@ -43,7 +43,8 @@ async function getUsers(messages, usersCollection) {
 		} else if (sessionUsers.hasOwnProperty(message.user_id)) {
 			message.user = sessionUsers[message.user_id]
 		} else {
-			const user = await usersCollection.findOne({ _id: message.user_id })
+			let user = await usersCollection.findOne({ _id: message.user_id })
+			user = { _id: user._id, name: user.name }
 			sessionUsers[message.user_id] = user
 			message.user = user
 		}
