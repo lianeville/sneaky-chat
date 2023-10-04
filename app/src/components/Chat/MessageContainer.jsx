@@ -7,6 +7,7 @@ import PropTypes from "prop-types" // Import PropTypes
 class MessageContainer extends Component {
 	render() {
 		const { message } = this.props
+		console.log(message)
 		return (
 			<div className="bg-slate-300 flex p-2 my-2 items-center">
 				<ChatAvatar />
@@ -15,7 +16,7 @@ class MessageContainer extends Component {
 						<span className="mr-2">{message.user.name}</span>
 						<ChatTime time={message.created_at} />
 					</div>
-					<span>{message.text}</span>
+					<span>{message.text_content}</span>
 				</div>
 			</div>
 		)
@@ -26,7 +27,7 @@ MessageContainer.propTypes = {
 	message: PropTypes.shape({
 		created_at: PropTypes.string,
 		session_id: PropTypes.string,
-		text: PropTypes.string,
+		text_content: PropTypes.string,
 		user: PropTypes.object,
 		_id: PropTypes.string,
 	}),

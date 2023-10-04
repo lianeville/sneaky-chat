@@ -38,7 +38,9 @@ async function getMessages(sessionId) {
 async function getUsers(messages, usersCollection) {
 	let sessionUsers = {}
 	for (const message of messages) {
-		if (sessionUsers.hasOwnProperty(message.user_id)) {
+		if (!message.user_id) {
+			message.user = { name: "Anonymous", _id: 0 }
+		} else if (sessionUsers.hasOwnProperty(message.user_id)) {
 			message.user = sessionUsers[message.user_id]
 		} else {
 			const user = await usersCollection.findOne({ _id: message.user_id })
@@ -68,6 +70,7 @@ app.get("/session/:sessionId", async (req, res) => {
 
 app.post("/session/:sessionId/send", async (req, res) => {
 	let sessionId = req.params.sessionId
+	sessionId = new ObjectId(sessionId)
 
 	let message = req.body
 	message.session_id = sessionId
