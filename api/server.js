@@ -9,15 +9,18 @@ const config = dotenv.config({ path: "../.env" })
 const uri = config.parsed.mongoURI
 
 const client = new MongoClient(uri)
+const db = client.db("Chat-App")
+const sessionCollection = db.collection("Sessions")
+const messageCollection = db.collection("Messages")
+const usersCollection = db.collection("Users")
 
 app.use(cors())
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 async function getMessages(sessionId) {
 	try {
 		await client.connect()
-		const db = client.db("Chat-App")
-		const messageCollection = db.collection("Messages")
-		const usersCollection = db.collection("Users")
 		sessionId = new ObjectId(sessionId)
 
 		let sessionMessages = messageCollection.find({
@@ -49,8 +52,6 @@ async function getUsers(messages, usersCollection) {
 async function getSessions() {
 	try {
 		await client.connect()
-		const db = client.db("Chat-App")
-		const sessionCollection = db.collection("Sessions")
 		let sessions = sessionCollection.find({})
 		sessions = await sessions.toArray()
 
@@ -65,7 +66,40 @@ app.get("/session/:sessionId", async (req, res) => {
 	res.json(messages)
 })
 
-app.get("/", async (req, res) => {
+app.post("/session/:sessionId/send", async (req, res) => {
+	let sessionId = req.params.sessionId
+
+	let message = req.body
+	message.session_id = sessionId
+	message.created_at = new Date()
+
+	if (!message.user_id) {
+		message.user_id = null
+	}
+
+	try {
+		await client.connect()
+
+		const result = await messageCollection.insertOne(message)
+		if (result.acknowledged) {
+			res.status(200).json({
+				message: "Success",
+			})
+		} else {
+			res.status(500).json({
+				message: "Failed",
+			})
+		}
+	} catch (error) {
+		console.error("Error connecting to MongoDB:", error)
+		res.status(400).json({
+			message: "Failure to connect",
+		})
+		throw error // Re-throw the error
+	}
+})
+
+app.get("/sessions", async (req, res) => {
 	const sessions = await getSessions()
 	res.json(sessions)
 })
