@@ -14,6 +14,7 @@ class MessageFeed extends Component {
 			messages: [], // Initialize data as an empty array
 		}
 		this.messagesEndRef = React.createRef()
+		this.messageFeedRef = React.createRef()
 	}
 
 	componentDidMount() {
@@ -30,7 +31,7 @@ class MessageFeed extends Component {
 				console.log("messages", messages)
 				// Handle the data here (e.g., update the component state)
 				this.setState({ messages })
-				this.scrollToBottom()
+				this.scrollToBottom(true)
 			})
 			.catch(error => {
 				console.error("Error fetching data:", error)
@@ -50,8 +51,14 @@ class MessageFeed extends Component {
 		})
 	}
 
-	scrollToBottom = () => {
-		this.messagesEndRef.current.scrollIntoView({ behavior: "instant" })
+	scrollToBottom = alwaysScroll => {
+		const feed = this.messageFeedRef.current
+		let scrolledFromBottom =
+			feed.scrollHeight - feed.clientHeight - feed.scrollTop
+
+		if (scrolledFromBottom < 200 || alwaysScroll) {
+			this.messagesEndRef.current.scrollIntoView({ behavior: "instant" })
+		}
 	}
 
 	componentWillUnmount() {
@@ -67,7 +74,7 @@ class MessageFeed extends Component {
 		return (
 			<div className="w-full absolute inset-0 flex flex-col-reverse">
 				<SendMessageContainer />
-				<div className="h-full overflow-y-scroll">
+				<div ref={this.messageFeedRef} className="h-full overflow-y-scroll">
 					{messages.map((message, index) => (
 						<MessageContainer key={index} message={message} />
 					))}
