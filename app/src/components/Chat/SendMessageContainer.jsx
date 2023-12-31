@@ -1,4 +1,5 @@
 import { Component } from "react"
+import { SocketProvider } from "/src/context/SocketContext.jsx"
 
 const baseURL = "http://localhost:8000"
 
@@ -57,7 +58,7 @@ class SendMessageContainer extends Component {
 					<input
 						type="text"
 						placeholder="Start a new message"
-						className="p-2 mr-2 w-full bg-slate-100 rounded-lg text-left"
+						className="p-2 mr-2 w-full bg-slate-600 rounded-lg text-left"
 						value={this.state.message} // Bind input value to the state
 						onChange={this.handleMessageChange} // Update state on input change
 					></input>

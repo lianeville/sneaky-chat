@@ -1,7 +1,18 @@
 const express = require("express")
 const cors = require("cors")
-const app = express()
 const port = 8000
+
+const app = express()
+const server = app.listen(port, () => {
+	console.log(`Server is running on port ${port}`)
+})
+
+const io = require("socket.io")(server, {
+	cors: {
+		origin: "*",
+	},
+})
+
 const { MongoClient, ObjectId } = require("mongodb")
 
 const dotenv = require("dotenv")
@@ -108,6 +119,24 @@ app.get("/sessions", async (req, res) => {
 	res.json(sessions)
 })
 
-app.listen(port, () => {
-	console.log(`Server is running on port ${port}`)
+// app.listen(port, () => {
+// 	console.log(`Server is running on port ${port}`)
+// })
+
+// Socket.io integration
+io.on("connection", socket => {
+	console.log("A user connected")
+
+	// Handle incoming messages
+	socket.on("message", data => {
+		console.log("Message received:", data)
+
+		// Broadcast the message to all connected clients
+		io.emit("message", data)
+	})
+
+	// Handle disconnect
+	socket.on("disconnect", () => {
+		console.log("User disconnected")
+	})
 })

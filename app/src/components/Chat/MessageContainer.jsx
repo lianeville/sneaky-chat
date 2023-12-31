@@ -9,7 +9,7 @@ class MessageContainer extends Component {
 		const { message } = this.props
 		const nameStyling = message.user._id ? "" : "italic"
 		return (
-			<div className="bg-slate-300 flex p-2 my-2 items-center">
+			<div className="bg-slate-700 flex p-2 my-2 items-center">
 				<ChatAvatar />
 				<div className="flex flex-col w-full">
 					<div className="flex">

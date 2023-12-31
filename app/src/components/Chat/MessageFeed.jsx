@@ -1,6 +1,7 @@
 import { Component } from "react"
 import MessageContainer from "./MessageContainer"
 import SendMessageContainer from "./SendMessageContainer"
+// const socket = new WebSocket("ws://localhost:8000")
 
 const baseURL = "http://localhost:8000"
 

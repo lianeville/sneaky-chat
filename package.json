@@ -1,7 +1,8 @@
 {
 	"dependencies": {
 		"concurrently": "^8.2.1",
-		"dotenv": "^16.3.1"
+		"dotenv": "^16.3.1",
+		"ws": "^8.16.0"
 	},
 	"scripts": {
 		"start-dev": "concurrently \"npm run start-app\" \"npm run start-api\"",

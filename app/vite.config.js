@@ -7,4 +7,7 @@ export default defineConfig({
 	resolve: {
 		mainFields: [],
 	},
+	alias: {
+		src: "/src",
+	},
 })
