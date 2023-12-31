@@ -1,8 +1,6 @@
 import { Component } from "react"
 import { SocketContext } from "/src/context/SocketContext.jsx"
 
-const baseURL = "http://localhost:8000"
-
 class SendMessageContainer extends Component {
 	constructor(props) {
 		super(props)
@@ -30,34 +28,7 @@ class SendMessageContainer extends Component {
 			sessionId: window.location.pathname.split("/")[2], // fix this pls
 			content: message,
 		})
-		// message = JSON.stringify(message)
-
-		// try {
-		// 	const response = await fetch(
-		// 		baseURL + window.location.pathname + "/send",
-		// 		{
-		// 			method: "POST",
-		// 			headers: {
-		// 				"Content-Type": "application/json",
-		// 			},
-		// 			body: message,
-		// 		}
-		// 	)
-
-		// 	// Handle the response as needed
-		// 	if (response.ok) {
-		// 		const responseData = await response.json()
-		// 		console.log("Message sent successfully", responseData)
-
-		// 		// Optionally, clear the input field after submission
-		// 		this.setState({ message: "" })
-		// 	} else {
-		// 		console.error("Error sending message")
-		// 	}
-		// } catch (error) {
-		// 	// Handle any errors
-		// 	console.error("Error sending message", error)
-		// }
+		this.setState({ message: "" })
 	}
 
 	render() {
