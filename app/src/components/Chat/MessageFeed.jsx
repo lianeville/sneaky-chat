@@ -37,7 +37,7 @@ class MessageFeed extends Component {
 		return (
 			<div className="w-full absolute inset-0 flex flex-col-reverse">
 				<SendMessageContainer />
-				<div>
+				<div className="h-full overflow-y-scroll">
 					{messages.map((message, index) => (
 						<MessageContainer key={index} message={message} />
 					))}

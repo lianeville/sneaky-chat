@@ -81,37 +81,33 @@ app.get("/session/:sessionId", async (req, res) => {
 })
 
 app.post("/session/:sessionId/send", async (req, res) => {
-	let sessionId = req.params.sessionId
-	sessionId = new ObjectId(sessionId)
-
-	let message = req.body
-	message.session_id = sessionId
-	message.created_at = new Date()
-
-	if (!message.user_id) {
-		message.user_id = null
-	}
-
-	try {
-		await client.connect()
-
-		const result = await messageCollection.insertOne(message)
-		if (result.acknowledged) {
-			res.status(200).json({
-				message: "Success",
-			})
-		} else {
-			res.status(500).json({
-				message: "Failed",
-			})
-		}
-	} catch (error) {
-		console.error("Error connecting to MongoDB:", error)
-		res.status(400).json({
-			message: "Failure to connect",
-		})
-		throw error // Re-throw the error
-	}
+	// let sessionId = req.params.sessionId
+	// sessionId = new ObjectId(sessionId)
+	// let message = req.body
+	// message.session_id = sessionId
+	// message.created_at = new Date()
+	// if (!message.user_id) {
+	// 	message.user_id = null
+	// }
+	// try {
+	// 	await client.connect()
+	// 	const result = await messageCollection.insertOne(message)
+	// 	if (result.acknowledged) {
+	// 		res.status(200).json({
+	// 			message: "Success",
+	// 		})
+	// 	} else {
+	// 		res.status(500).json({
+	// 			message: "Failed",
+	// 		})
+	// 	}
+	// } catch (error) {
+	// 	console.error("Error connecting to MongoDB:", error)
+	// 	res.status(400).json({
+	// 		message: "Failure to connect",
+	// 	})
+	// 	throw error // Re-throw the error
+	// }
 })
 
 app.get("/sessions", async (req, res) => {
@@ -128,8 +124,33 @@ io.on("connection", socket => {
 	console.log("A user connected")
 
 	// Handle incoming messages
-	socket.on("message", data => {
+	socket.on("message", async data => {
 		console.log("Message received:", data)
+
+		let sessionId = data.sessionId
+		sessionId = new ObjectId(sessionId)
+
+		let message = data.content
+		message.session_id = sessionId
+		message.created_at = new Date()
+
+		if (!message.user_id) {
+			message.user_id = null
+		}
+
+		try {
+			await client.connect()
+
+			const result = await messageCollection.insertOne(message)
+			if (result.acknowledged) {
+				console.log("Message Sent")
+			} else {
+				console.error("Message Failed to Send")
+			}
+		} catch (error) {
+			console.error("Error connecting to MongoDB:", error)
+			throw error // Re-throw the error
+		}
 
 		// Broadcast the message to all connected clients
 		io.emit("message", data)

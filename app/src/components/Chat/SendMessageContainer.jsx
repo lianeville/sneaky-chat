@@ -1,5 +1,5 @@
 import { Component } from "react"
-import { SocketProvider } from "/src/context/SocketContext.jsx"
+import { SocketContext } from "/src/context/SocketContext.jsx"
 
 const baseURL = "http://localhost:8000"
 
@@ -11,6 +11,8 @@ class SendMessageContainer extends Component {
 		}
 	}
 
+	static contextType = SocketContext
+
 	// Event handler to update the message state
 	handleMessageChange = e => {
 		this.setState({ message: e.target.value })
@@ -18,37 +20,44 @@ class SendMessageContainer extends Component {
 
 	// Event handler to handle form submission
 	handleSubmit = async e => {
+		const { socket } = this.context
+
 		e.preventDefault()
 
 		let message = { user_id: 0, text_content: this.state.message }
-		message = JSON.stringify(message)
 
-		try {
-			const response = await fetch(
-				baseURL + window.location.pathname + "/send",
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: message,
-				}
-			)
+		socket.emit("message", {
+			sessionId: window.location.pathname.split("/")[2], // fix this pls
+			content: message,
+		})
+		// message = JSON.stringify(message)
 
-			// Handle the response as needed
-			if (response.ok) {
-				const responseData = await response.json()
-				console.log("Message sent successfully", responseData)
+		// try {
+		// 	const response = await fetch(
+		// 		baseURL + window.location.pathname + "/send",
+		// 		{
+		// 			method: "POST",
+		// 			headers: {
+		// 				"Content-Type": "application/json",
+		// 			},
+		// 			body: message,
+		// 		}
+		// 	)
 
-				// Optionally, clear the input field after submission
-				this.setState({ message: "" })
-			} else {
-				console.error("Error sending message")
-			}
-		} catch (error) {
-			// Handle any errors
-			console.error("Error sending message", error)
-		}
+		// 	// Handle the response as needed
+		// 	if (response.ok) {
+		// 		const responseData = await response.json()
+		// 		console.log("Message sent successfully", responseData)
+
+		// 		// Optionally, clear the input field after submission
+		// 		this.setState({ message: "" })
+		// 	} else {
+		// 		console.error("Error sending message")
+		// 	}
+		// } catch (error) {
+		// 	// Handle any errors
+		// 	console.error("Error sending message", error)
+		// }
 	}
 
 	render() {
