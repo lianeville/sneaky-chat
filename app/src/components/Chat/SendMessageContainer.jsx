@@ -6,6 +6,18 @@ class SendMessageContainer extends Component {
 		super(props)
 		this.state = {
 			message: "", // State variable to store the input value
+			idSeed: localStorage.getItem("idSeed"),
+		}
+	}
+
+	componentDidMount() {
+		if (!this.state.idSeed) {
+			const randomValue = Math.random()
+			const seedString = randomValue.toString().substring(2)
+			const seed = parseInt(seedString, 10)
+
+			localStorage.setItem("idSeed", seed)
+			this.setState({ idSeed: seed })
 		}
 	}
 
@@ -18,15 +30,14 @@ class SendMessageContainer extends Component {
 
 	// Event handler to handle form submission
 	handleSubmit = async e => {
-		const { socket } = this.context
-
 		e.preventDefault()
 
+		const { socket } = this.context
 		let message = { user_id: 0, text_content: this.state.message }
-
 		socket.emit("message", {
 			sessionId: window.location.pathname.split("/")[2], // fix this pls
 			content: message,
+			userSeed: this.state.idSeed,
 		})
 		this.setState({ message: "" })
 	}
@@ -37,7 +48,7 @@ class SendMessageContainer extends Component {
 				<form className="w-full flex" onSubmit={this.handleSubmit}>
 					<input
 						type="text"
-						placeholder="Start a new message"
+						placeholder={"Send a message as " + this.state.idSeed}
 						className="p-2 mr-2 w-full bg-slate-600 rounded-lg text-left"
 						value={this.state.message} // Bind input value to the state
 						onChange={this.handleMessageChange} // Update state on input change

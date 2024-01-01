@@ -25,6 +25,13 @@ const sessionCollection = db.collection("Sessions")
 const messageCollection = db.collection("Messages")
 const usersCollection = db.collection("Users")
 
+const {
+	uniqueNamesGenerator,
+	adjectives,
+	colors,
+	animals,
+} = require("unique-names-generator")
+
 app.use(cors())
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
@@ -50,7 +57,13 @@ async function getUsers(messages, usersCollection) {
 	let sessionUsers = {}
 	for (const message of messages) {
 		if (!message.user_id) {
-			message.user = { name: "Anonymous", _id: 0 }
+			const randomNameConfig = {
+				dictionaries: [adjectives, animals],
+				separator: " ",
+				seed: message.id_seed || 123,
+			}
+			const randomName = uniqueNamesGenerator(randomNameConfig)
+			message.user = { name: randomName, _id: 0 }
 		} else if (sessionUsers.hasOwnProperty(message.user_id)) {
 			message.user = sessionUsers[message.user_id]
 		} else {
@@ -80,49 +93,13 @@ app.get("/session/:sessionId", async (req, res) => {
 	res.json(messages)
 })
 
-app.post("/session/:sessionId/send", async (req, res) => {
-	// let sessionId = req.params.sessionId
-	// sessionId = new ObjectId(sessionId)
-	// let message = req.body
-	// message.session_id = sessionId
-	// message.created_at = new Date()
-	// if (!message.user_id) {
-	// 	message.user_id = null
-	// }
-	// try {
-	// 	await client.connect()
-	// 	const result = await messageCollection.insertOne(message)
-	// 	if (result.acknowledged) {
-	// 		res.status(200).json({
-	// 			message: "Success",
-	// 		})
-	// 	} else {
-	// 		res.status(500).json({
-	// 			message: "Failed",
-	// 		})
-	// 	}
-	// } catch (error) {
-	// 	console.error("Error connecting to MongoDB:", error)
-	// 	res.status(400).json({
-	// 		message: "Failure to connect",
-	// 	})
-	// 	throw error // Re-throw the error
-	// }
-})
-
 app.get("/sessions", async (req, res) => {
 	const sessions = await getSessions()
 	res.json(sessions)
 })
 
-// app.listen(port, () => {
-// 	console.log(`Server is running on port ${port}`)
-// })
-
 // Socket.io integration
 io.on("connection", socket => {
-	console.log("A user connected")
-
 	// Handle incoming messages
 	socket.on("message", async data => {
 		console.log("Message received:", data)
@@ -133,6 +110,7 @@ io.on("connection", socket => {
 		let message = data.content
 		message.session_id = sessionId
 		message.created_at = new Date()
+		message.id_seed = data.userSeed
 
 		if (!message.user_id) {
 			message.user_id = null
@@ -158,6 +136,6 @@ io.on("connection", socket => {
 
 	// Handle disconnect
 	socket.on("disconnect", () => {
-		console.log("User disconnected")
+		// console.log("User disconnected")
 	})
 })

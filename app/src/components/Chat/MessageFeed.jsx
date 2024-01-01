@@ -2,6 +2,12 @@ import React, { Component } from "react"
 import MessageContainer from "./MessageContainer"
 import SendMessageContainer from "./SendMessageContainer"
 import { SocketContext } from "/src/context/SocketContext"
+import {
+	uniqueNamesGenerator,
+	adjectives,
+	colors,
+	animals,
+} from "unique-names-generator"
 
 const baseURL = "http://localhost:8000"
 
@@ -38,9 +44,18 @@ class MessageFeed extends Component {
 			})
 
 		socket.on("message", newMessage => {
+			const userSeed = newMessage.userSeed
+
+			const randomNameConfig = {
+				dictionaries: [adjectives, animals],
+				separator: " ",
+				seed: userSeed || 123,
+			}
+			const randomName = uniqueNamesGenerator(randomNameConfig)
+
 			newMessage = newMessage.content
 			if (!newMessage.user) {
-				newMessage.user = { name: "Anonymous", _id: 0 }
+				newMessage.user = { name: randomName, _id: 0 }
 			}
 			this.setState(
 				prevState => ({
