@@ -60,7 +60,7 @@ async function getUsers(messages, usersCollection) {
 			const randomNameConfig = {
 				dictionaries: [adjectives, animals],
 				separator: " ",
-				seed: message.id_seed || 123,
+				seed: message.user_seed || 123,
 			}
 			const randomName = uniqueNamesGenerator(randomNameConfig)
 			message.user = { name: randomName, _id: 0 }
@@ -110,7 +110,7 @@ io.on("connection", socket => {
 		let message = data.content
 		message.session_id = sessionId
 		message.created_at = new Date()
-		message.id_seed = data.userSeed
+		message.user_seed = data.userSeed
 
 		if (!message.user_id) {
 			message.user_id = null

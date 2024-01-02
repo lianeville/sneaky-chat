@@ -10,7 +10,7 @@ class MessageContainer extends Component {
 		const nameStyling = message.user._id ? "" : "italic"
 		return (
 			<div className="bg-slate-700 flex p-2 my-2 items-center">
-				<ChatAvatar />
+				<ChatAvatar seed={message.user_seed} />
 				<div className="flex flex-col w-full">
 					<div className="flex">
 						<span className={`mr-2 ${nameStyling}`}>
