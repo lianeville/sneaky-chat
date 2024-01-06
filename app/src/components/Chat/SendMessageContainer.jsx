@@ -9,7 +9,7 @@ class SendMessageContainer extends Component {
 		this.state = {
 			message: "", // State variable to store the input value
 			anonSeed: localStorage.getItem("userSeed"),
-			anonName: "a",
+			anonName: "",
 		}
 	}
 

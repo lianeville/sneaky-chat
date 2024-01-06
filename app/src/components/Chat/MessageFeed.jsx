@@ -97,7 +97,18 @@ class MessageFeed extends Component {
 				<SendMessageContainer />
 				<div ref={this.messageFeedRef} className="h-full overflow-y-scroll">
 					{messages.map((message, index) => (
-						<MessageContainer key={index} message={message} />
+						<MessageContainer
+							key={index}
+							message={message}
+							// seed={message.user_seed}
+							// prevSeed={messages[index - 1]?.user_seed}
+							followUp={
+								messages[index - 1]?.user_seed == message.user_seed
+							}
+							followed={
+								messages[index + 1]?.user_seed == message.user_seed
+							}
+						/>
 					))}
 					<div ref={this.messagesEndRef} />
 				</div>

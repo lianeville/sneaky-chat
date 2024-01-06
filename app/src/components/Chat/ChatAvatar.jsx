@@ -19,12 +19,19 @@ function getRandomColor(seed) {
 class ChatAvatar extends Component {
 	render() {
 		const { seed } = this.props
+		const { hidden } = this.props
 
 		return (
-			<div
-				style={{ backgroundColor: getRandomColor(seed) }}
-				className="p-5 mr-2 bg-slate-800 rounded-full"
-			></div>
+			<div>
+				{hidden ? (
+					<div className="px-5 mr-2"></div>
+				) : (
+					<div
+						style={{ backgroundColor: getRandomColor(seed) }}
+						className="p-5 mr-2 bg-slate-800 rounded-full"
+					></div>
+				)}
+			</div>
 		)
 	}
 }
