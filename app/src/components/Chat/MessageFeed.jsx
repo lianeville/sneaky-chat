@@ -33,6 +33,7 @@ class MessageFeed extends Component {
 			dictionaries: [adjectives, animals],
 			separator: " ",
 			seed: 123,
+			style: "capital",
 		}
 
 		fetch(baseURL + window.location.pathname)

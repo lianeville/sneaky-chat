@@ -7,11 +7,12 @@ import {
 
 const initialState = {
 	seed: 0,
-	name: "",
+	name: "aaa",
 	randomNameConfig: {
 		dictionaries: [adjectives, animals],
 		separator: " ",
 		seed: 0,
+		style: "capital",
 	},
 }
 
@@ -29,9 +30,9 @@ export const anonUser = createSlice({
 			}
 			state.seed = seed
 			state.randomNameConfig.seed = state.seed
-			if (state.name == "") {
-				state.name = uniqueNamesGenerator(state.randomNameConfig)
-			}
+			// if (state.name == "") {
+			state.name = uniqueNamesGenerator(state.randomNameConfig)
+			// }
 		},
 	},
 })

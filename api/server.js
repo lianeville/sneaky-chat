@@ -61,6 +61,7 @@ async function getUsers(messages, usersCollection) {
 				dictionaries: [adjectives, animals],
 				separator: " ",
 				seed: message.user_seed || 123,
+				style: "capital",
 			}
 			const randomName = uniqueNamesGenerator(randomNameConfig)
 			message.user = { name: randomName, _id: 0 }

@@ -9,16 +9,16 @@ class SendMessageContainer extends Component {
 		this.state = {
 			message: "", // State variable to store the input value
 			anonSeed: localStorage.getItem("userSeed"),
-			anonName: "",
+			anonName: "a",
 		}
 	}
 
-	componentDidMount() {
-		this.props.updateName()
-		const { anonName } = this.props
-		const { anonSeed } = this.props
-		this.setState({ userSeed: anonSeed })
-		this.setState({ anonName: anonName })
+	async componentDidMount() {
+		await this.props.updateName()
+		this.setState({
+			userSeed: this.props.anonSeed,
+			anonName: this.props.anonName,
+		})
 	}
 
 	static contextType = SocketContext
