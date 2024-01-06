@@ -1,24 +1,24 @@
 import { Component } from "react"
 import { SocketContext } from "/src/context/SocketContext.jsx"
+import { connect } from "react-redux"
+import { anonUser } from "../../reducers/anonUser"
 
 class SendMessageContainer extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			message: "", // State variable to store the input value
-			userSeed: localStorage.getItem("userSeed"),
+			anonSeed: localStorage.getItem("userSeed"),
+			anonName: "",
 		}
 	}
 
 	componentDidMount() {
-		if (!this.state.userSeed) {
-			const randomValue = Math.random()
-			const seedString = randomValue.toString().substring(2)
-			const seed = parseInt(seedString, 10)
-
-			localStorage.setItem("userSeed", seed)
-			this.setState({ userSeed: seed })
-		}
+		this.props.updateName()
+		const { anonName } = this.props
+		const { anonSeed } = this.props
+		this.setState({ userSeed: anonSeed })
+		this.setState({ anonName: anonName })
 	}
 
 	static contextType = SocketContext
@@ -37,7 +37,7 @@ class SendMessageContainer extends Component {
 		socket.emit("message", {
 			sessionId: window.location.pathname.split("/")[2], // fix this pls
 			content: message,
-			userSeed: this.state.userSeed,
+			userSeed: this.state.anonSeed,
 		})
 		this.setState({ message: "" })
 	}
@@ -48,7 +48,7 @@ class SendMessageContainer extends Component {
 				<form className="w-full flex" onSubmit={this.handleSubmit}>
 					<input
 						type="text"
-						placeholder={"Send a message as " + this.state.userSeed}
+						placeholder={"Send a message as " + this.state.anonName}
 						className="p-2 mr-2 w-full bg-slate-600 rounded-lg text-left"
 						value={this.state.message} // Bind input value to the state
 						onChange={this.handleMessageChange} // Update state on input change
@@ -65,4 +65,19 @@ class SendMessageContainer extends Component {
 	}
 }
 
-export default SendMessageContainer
+const mapStateToProps = state => ({
+	anonUser: state.anonUser,
+	anonName: state.anonUser.name,
+	anonSeed: state.anonUser.seed,
+})
+
+const mapDispatchToProps = {
+	updateName: anonUser.actions.updateName,
+}
+
+const ConnectedSendMessageContainer = connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(SendMessageContainer)
+
+export default ConnectedSendMessageContainer

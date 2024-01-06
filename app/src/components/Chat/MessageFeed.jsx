@@ -5,9 +5,11 @@ import { SocketContext } from "/src/context/SocketContext"
 import {
 	uniqueNamesGenerator,
 	adjectives,
-	colors,
 	animals,
 } from "unique-names-generator"
+import { connect } from "react-redux"
+// import { useDispatch } from "react-redux"
+import { anonUser } from "../../reducers/anonUser"
 
 const baseURL = "http://localhost:8000"
 
@@ -18,6 +20,7 @@ class MessageFeed extends Component {
 		super(props)
 		this.state = {
 			messages: [], // Initialize data as an empty array
+			randomName: "",
 		}
 		this.messagesEndRef = React.createRef()
 		this.messageFeedRef = React.createRef()
@@ -25,6 +28,12 @@ class MessageFeed extends Component {
 
 	componentDidMount() {
 		const { socket } = this.context
+
+		const randomNameConfig = {
+			dictionaries: [adjectives, animals],
+			separator: " ",
+			seed: 123,
+		}
 
 		fetch(baseURL + window.location.pathname)
 			.then(response => {
@@ -46,11 +55,7 @@ class MessageFeed extends Component {
 		socket.on("message", newMessage => {
 			const userSeed = newMessage.userSeed
 
-			const randomNameConfig = {
-				dictionaries: [adjectives, animals],
-				separator: " ",
-				seed: userSeed || 123,
-			}
+			randomNameConfig.seed = userSeed || 123
 			const randomName = uniqueNamesGenerator(randomNameConfig)
 
 			newMessage = newMessage.content
@@ -100,4 +105,17 @@ class MessageFeed extends Component {
 	}
 }
 
-export default MessageFeed
+const mapStateToProps = state => ({
+	anonUser: state,
+})
+
+const mapDispatchToProps = {
+	updateName: anonUser.actions.updateName,
+}
+
+const ConnectedMessageFeed = connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(MessageFeed)
+
+export default ConnectedMessageFeed

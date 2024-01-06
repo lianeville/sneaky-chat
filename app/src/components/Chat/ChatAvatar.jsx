@@ -19,7 +19,6 @@ function getRandomColor(seed) {
 class ChatAvatar extends Component {
 	render() {
 		const { seed } = this.props
-		console.log(seed)
 
 		return (
 			<div

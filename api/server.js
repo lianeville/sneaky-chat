@@ -135,7 +135,5 @@ io.on("connection", socket => {
 	})
 
 	// Handle disconnect
-	socket.on("disconnect", () => {
-		// console.log("User disconnected")
-	})
+	socket.on("disconnect", () => {})
 })
