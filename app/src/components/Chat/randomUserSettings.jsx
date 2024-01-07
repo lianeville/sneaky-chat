@@ -40,7 +40,7 @@ class RandomUserSettings extends Component {
 			<div className="w-full mt-auto bg-slate-800 p-3 flex justify-center">
 				<div className="w-full max-w-xl flex justify-between">
 					<div className="flex items-center">
-						<ChatAvatar seed={this.state.anonSeed} />
+						<ChatAvatar seed={this.state.anonSeed} checkForUpdates />
 						<span>{this.state.anonName}</span>
 					</div>
 					<button onClick={this.handleClick}>Randomize</button>

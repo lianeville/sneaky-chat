@@ -18,6 +18,7 @@ function getRandomColor(seed) {
 
 class ChatAvatar extends Component {
 	componentDidUpdate(prevProps) {
+		if (!this.props.checkForUpdates) return
 		// Check if the seed prop has changed
 		if (this.props.seed !== prevProps.seed) {
 			// Update the backgroundColor with the new seed
