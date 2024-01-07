@@ -36,20 +36,37 @@ app.use(cors())
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
-async function getMessages(sessionId) {
+async function getMessages(sessionId, beforeMessageId, limit = 30) {
+	console.log(beforeMessageId)
 	try {
 		await client.connect()
 		sessionId = new ObjectId(sessionId)
 
-		let sessionMessages = messageCollection.find({
-			session_id: sessionId,
-		})
-		let messages = await sessionMessages.toArray()
+		let query = { session_id: sessionId }
+		if (beforeMessageId) {
+			const beforeMessage = await messageCollection.findOne({
+				_id: new ObjectId(beforeMessageId),
+			})
+			if (beforeMessage) {
+				query.created_at = {
+					$lt: new Date(beforeMessage.created_at),
+					$gte: new Date(0), // Adjust this date based on your minimum valid date
+				}
+			}
+		}
 
+		let sessionMessages = messageCollection
+			.find(query)
+			.sort({ created_at: -1 })
+			.limit(limit)
+
+		let messages = await sessionMessages.toArray()
 		messages = await getUsers(messages, usersCollection)
-		return messages
+
+		return messages.reverse()
 	} catch (error) {
 		console.error("Error connecting to MongoDB:", error)
+		// Handle the error as needed
 	}
 }
 
@@ -89,8 +106,12 @@ async function getSessions() {
 	}
 }
 
-app.get("/session/:sessionId", async (req, res) => {
-	const messages = await getMessages(req.params.sessionId)
+app.get("/session/:sessionId/:lastMessage?", async (req, res) => {
+	// console.log(req.params)
+	const messages = await getMessages(
+		req.params.sessionId,
+		req.params.lastMessage
+	)
 	res.json(messages)
 })
 

@@ -49,7 +49,7 @@ class SendMessageContainer extends Component {
 					<input
 						type="text"
 						placeholder={"Send a message as " + this.state.anonName}
-						className="p-2 mr-2 w-full bg-slate-600 rounded-lg text-left"
+						className="focus:outline-none p-2 mr-2 w-full bg-slate-600 rounded-lg text-left"
 						value={this.state.message} // Bind input value to the state
 						onChange={this.handleMessageChange} // Update state on input change
 					></input>
