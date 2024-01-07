@@ -21,7 +21,7 @@ class MessageFeed extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			messages: [], // Initialize data as an empty array
+			messages: [],
 			randomName: "",
 			loadedloadedAllMessages: false,
 		}
@@ -70,6 +70,11 @@ class MessageFeed extends Component {
 
 	fetchMessages(lastId = "") {
 		if (this.state.loadedAllMessages) return
+
+		const feed = this.messageFeedRef.current
+		const scrollPositionBeforeLoad =
+			feed.scrollHeight - feed.clientHeight - feed.scrollTop
+
 		fetch(baseURL + window.location.pathname + "/" + lastId)
 			.then(response => {
 				if (!response.ok) {
@@ -78,19 +83,25 @@ class MessageFeed extends Component {
 				return response.json()
 			})
 			.then(messages => {
-				if (lastId != "") {
-					if (messages.length == 0) {
+				if (lastId !== "") {
+					if (messages.length === 0) {
 						this.setState({ loadedAllMessages: true })
 						return
 					}
+
 					const loadedAllMessages = messages.concat(this.state.messages)
-					this.setState({ messages: loadedAllMessages })
+					this.setState({ messages: loadedAllMessages }, () => {
+						this.messageFeedRef.current.scrollTop =
+							feed.scrollHeight -
+							feed.clientHeight -
+							scrollPositionBeforeLoad
+					})
 				} else {
-					this.setState({ messages })
-					this.scrollToBottom(true)
+					this.setState({ messages }, () => {
+						this.scrollToBottom(true)
+					})
 				}
 				this.initializeObserver()
-				console.log(this.state.messages)
 			})
 			.catch(error => {
 				console.error("Error fetching data:", error)
@@ -141,7 +152,6 @@ class MessageFeed extends Component {
 			entries.forEach(entry => {
 				if (entry.isIntersecting) {
 					this.handleFetchMessages(this.state.messages[0]._id)
-					// Your action here
 				}
 			})
 		})
