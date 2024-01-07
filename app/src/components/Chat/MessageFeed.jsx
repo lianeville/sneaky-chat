@@ -23,6 +23,7 @@ class MessageFeed extends Component {
 		this.state = {
 			messages: [], // Initialize data as an empty array
 			randomName: "",
+			loadedloadedAllMessages: false,
 		}
 		this.messagesEndRef = React.createRef()
 		this.messageFeedRef = React.createRef()
@@ -64,12 +65,11 @@ class MessageFeed extends Component {
 	debouncedFetchMessages = debounce(this.fetchMessages, 500)
 
 	handleFetchMessages(lastId) {
-		console.log(lastId)
 		this.debouncedFetchMessages(lastId)
 	}
 
 	fetchMessages(lastId = "") {
-		console.log(lastId == "")
+		if (this.state.loadedAllMessages) return
 		fetch(baseURL + window.location.pathname + "/" + lastId)
 			.then(response => {
 				if (!response.ok) {
@@ -79,8 +79,12 @@ class MessageFeed extends Component {
 			})
 			.then(messages => {
 				if (lastId != "") {
-					const allMessages = messages.concat(this.state.messages)
-					this.setState({ messages: allMessages })
+					if (messages.length == 0) {
+						this.setState({ loadedAllMessages: true })
+						return
+					}
+					const loadedAllMessages = messages.concat(this.state.messages)
+					this.setState({ messages: loadedAllMessages })
 				} else {
 					this.setState({ messages })
 					this.scrollToBottom(true)
@@ -97,10 +101,8 @@ class MessageFeed extends Component {
 		const feed = this.messageFeedRef.current
 		let scrolledFromBottom =
 			feed.scrollHeight - feed.clientHeight - feed.scrollTop
-		console.log(scrolledFromBottom)
 
 		if (scrolledFromBottom < 200 || alwaysScroll) {
-			console.log(this.messagesEndRef.current)
 			this.messagesEndRef.current.scrollIntoView()
 		}
 	}
@@ -139,8 +141,6 @@ class MessageFeed extends Component {
 			entries.forEach(entry => {
 				if (entry.isIntersecting) {
 					this.handleFetchMessages(this.state.messages[0]._id)
-					console.log(this.state.messages[0])
-					console.log("Element is visible!")
 					// Your action here
 				}
 			})
