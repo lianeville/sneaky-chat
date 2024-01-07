@@ -37,7 +37,6 @@ app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 async function getMessages(sessionId, beforeMessageId, limit = 30) {
-	console.log(beforeMessageId)
 	try {
 		await client.connect()
 		sessionId = new ObjectId(sessionId)
@@ -107,7 +106,6 @@ async function getSessions() {
 }
 
 app.get("/session/:sessionId/:lastMessage?", async (req, res) => {
-	// console.log(req.params)
 	const messages = await getMessages(
 		req.params.sessionId,
 		req.params.lastMessage

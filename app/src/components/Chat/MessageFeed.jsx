@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, Component } from "react"
+import React, { Component } from "react"
 import MessageContainer from "./MessageContainer"
 import SendMessageContainer from "./SendMessageContainer"
 import { SocketContext } from "/src/context/SocketContext"
@@ -8,8 +8,6 @@ import {
 	animals,
 } from "unique-names-generator"
 import { connect } from "react-redux"
-
-// import { useDispatch } from "react-redux"
 import { anonUser } from "../../reducers/anonUser"
 import debounce from "lodash.debounce"
 
@@ -71,10 +69,6 @@ class MessageFeed extends Component {
 	fetchMessages(lastId = "") {
 		if (this.state.loadedAllMessages) return
 
-		const feed = this.messageFeedRef.current
-		const scrollPositionBeforeLoad =
-			feed.scrollHeight - feed.clientHeight - feed.scrollTop
-
 		fetch(baseURL + window.location.pathname + "/" + lastId)
 			.then(response => {
 				if (!response.ok) {
@@ -88,6 +82,10 @@ class MessageFeed extends Component {
 						this.setState({ loadedAllMessages: true })
 						return
 					}
+
+					const feed = this.messageFeedRef.current
+					const scrollPositionBeforeLoad =
+						feed.scrollHeight - feed.clientHeight - feed.scrollTop
 
 					const loadedAllMessages = messages.concat(this.state.messages)
 					this.setState({ messages: loadedAllMessages }, () => {
@@ -196,14 +194,13 @@ class MessageFeed extends Component {
 	}
 }
 
+// Redux State Management
 const mapStateToProps = state => ({
 	anonUser: state,
 })
-
 const mapDispatchToProps = {
 	updateName: anonUser.actions.updateName,
 }
-
 const ConnectedMessageFeed = connect(
 	mapStateToProps,
 	mapDispatchToProps

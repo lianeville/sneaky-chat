@@ -17,6 +17,15 @@ function getRandomColor(seed) {
 }
 
 class ChatAvatar extends Component {
+	componentDidUpdate(prevProps) {
+		// Check if the seed prop has changed
+		if (this.props.seed !== prevProps.seed) {
+			// Update the backgroundColor with the new seed
+			const newColor = getRandomColor(this.props.seed)
+			this.avatarDiv.style.backgroundColor = newColor
+		}
+	}
+
 	render() {
 		const { seed } = this.props
 		const { hidden } = this.props
@@ -27,6 +36,7 @@ class ChatAvatar extends Component {
 					<div className="px-5 mr-2"></div>
 				) : (
 					<div
+						ref={div => (this.avatarDiv = div)}
 						style={{ backgroundColor: getRandomColor(seed) }}
 						className="p-5 mr-2 bg-slate-800 rounded-full"
 					></div>

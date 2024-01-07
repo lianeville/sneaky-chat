@@ -1,5 +1,6 @@
 import { Component } from "react"
 import ChatSession from "./ChatSession"
+import RandomUserSettings from "./randomUserSettings"
 
 const baseURL = "http://localhost:8000"
 
@@ -39,6 +40,7 @@ class SessionBoard extends Component {
 						<ChatSession key={index} session={session} />
 					))}
 				</div>
+				<RandomUserSettings />
 			</div>
 		)
 	}
