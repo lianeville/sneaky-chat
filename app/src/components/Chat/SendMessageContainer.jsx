@@ -19,9 +19,6 @@ class SendMessageContainer extends Component {
 			userSeed: this.props.anonSeed,
 			anonName: this.props.anonName,
 		})
-		// console.log(this.state.anonSeed)
-		// console.log(this.state.anonName)
-		// console.log(this.props.anonName)
 	}
 
 	static contextType = SocketContext

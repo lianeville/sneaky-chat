@@ -1,19 +1,20 @@
 import { Component } from "react"
 
-function getRandomColor(seed) {
+function stringToColor(seed) {
 	if (!seed) {
-		seed = 123
+		seed = "123abc"
 	}
-
-	const generateRandomValue = () => (Math.sin(seed++) + 1) / 2 // Simple function to generate a value between 0 and 1
-
-	// Generate random values for red, green, and blue components
-	const red = generateRandomValue() * 255
-	const green = generateRandomValue() * 255
-	const blue = generateRandomValue() * 255
-
-	// Create and return the color string in the format "rgb(r, g, b)"
-	return `rgb(${red.toFixed(0)}, ${green.toFixed(0)}, ${blue.toFixed(0)})`
+	seed = seed.toString()
+	let hash = 0
+	seed.split("").forEach(char => {
+		hash = char.charCodeAt(0) + ((hash << 5) - hash)
+	})
+	let colour = "#"
+	for (let i = 0; i < 3; i++) {
+		const value = (hash >> (i * 8)) & 0xff
+		colour += value.toString(16).padStart(2, "0")
+	}
+	return colour
 }
 
 class ChatAvatar extends Component {
@@ -22,7 +23,7 @@ class ChatAvatar extends Component {
 		// Check if the seed prop has changed
 		if (this.props.seed !== prevProps.seed) {
 			// Update the backgroundColor with the new seed
-			const newColor = getRandomColor(this.props.seed)
+			const newColor = stringToColor(this.props.seed)
 			this.avatarDiv.style.backgroundColor = newColor
 		}
 	}
@@ -38,7 +39,7 @@ class ChatAvatar extends Component {
 				) : (
 					<div
 						ref={div => (this.avatarDiv = div)}
-						style={{ backgroundColor: getRandomColor(seed) }}
+						style={{ backgroundColor: stringToColor(seed) }}
 						className="p-5 mr-2 bg-slate-800 rounded-full"
 					></div>
 				)}

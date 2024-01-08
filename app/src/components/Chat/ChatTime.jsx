@@ -24,7 +24,7 @@ class ChatTime extends Component {
 
 		// return <Moment className="text-gray-500">{time}</Moment>
 		// return <Moment>{time}</Moment>
-		return <div>{formatDate(time)}</div>
+		return <div className="text-xs text-slate-400">{formatDate(time)}</div>
 		// return <div>{formatDate(time)}</div>
 	}
 }

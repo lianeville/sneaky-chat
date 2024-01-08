@@ -23,21 +23,30 @@ export const anonUser = createSlice({
 		updateName: state => {
 			let seed = localStorage.getItem("userSeed")
 			if (!seed) {
-				const randomValue = Math.random()
-				const seedString = randomValue.toString().substring(2)
-				seed = parseInt(seedString, 10).toString()
+				seed = generateRandomSeed(12)
 				localStorage.setItem("userSeed", seed)
-				console.log("new seed", seed)
 			}
 			state.seed = seed
 			state.randomNameConfig.seed = state.seed
 			state.name = uniqueNamesGenerator(state.randomNameConfig)
-			console.log("new name", state.name)
 
 			// }
 		},
 	},
 })
+
+function generateRandomSeed(length) {
+	const characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	let seed = ""
+
+	for (let i = 0; i < length; i++) {
+		const randomIndex = Math.floor(Math.random() * characters.length)
+		seed += characters.charAt(randomIndex)
+	}
+
+	return seed
+}
 
 export const { updateName } = anonUser.actions
 

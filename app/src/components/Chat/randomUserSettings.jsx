@@ -13,8 +13,6 @@ class RandomUserSettings extends Component {
 	}
 
 	async componentDidMount() {
-		console.log(this.state.anonSeed)
-		// if (this.state.anonSeed) return
 		await this.props.updateName()
 		this.setState({
 			userSeed: this.props.anonSeed,
@@ -23,16 +21,12 @@ class RandomUserSettings extends Component {
 	}
 
 	handleClick = async () => {
-		// console.log("eeeepp")
 		localStorage.removeItem("userSeed")
 		await this.props.updateName()
 		this.setState({
 			anonSeed: this.props.anonSeed,
 			anonName: this.props.anonName,
 		})
-		console.log("props.seed", this.props.anonSeed)
-		console.log("local seed", localStorage.getItem("userSeed"))
-		console.log(this.props.anonSeed === localStorage.getItem("userSeed"))
 	}
 
 	render() {

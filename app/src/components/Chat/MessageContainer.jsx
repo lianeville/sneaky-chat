@@ -24,8 +24,6 @@ class MessageContainer extends Component {
 			containerStyle.marginTop = 0
 			containerStyle.paddingTop = ".25rem"
 		}
-		// console.log(index)
-		// console.log(followUp)
 		const nameStyling = message.user._id ? "" : "italic"
 		return (
 			<div
@@ -37,7 +35,7 @@ class MessageContainer extends Component {
 					{followUp ? (
 						<></>
 					) : (
-						<div className="flex">
+						<div className="flex items-center">
 							<span className={`mr-2 ${nameStyling}`}>
 								{message.user.name}
 							</span>
