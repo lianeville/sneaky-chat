@@ -116,7 +116,7 @@ async function createSession(name, pass) {
 
 		const result = await sessionCollection.insertOne(session)
 		if (result.acknowledged) {
-			console.log("Session Added")
+			return result.insertedId
 		} else {
 			console.error("Session Failed to Add")
 		}
@@ -134,7 +134,7 @@ app.get("/session/:sessionId/:lastMessage?", async (req, res) => {
 })
 
 app.post("/session/create", async (req, res) => {
-	const session = createSession(req.body.sessionName, req.body.password)
+	const session = await createSession(req.body.sessionName, req.body.password)
 	res.json(session)
 })
 

@@ -1,6 +1,7 @@
 import { Component } from "react"
 import ChatSession from "./ChatSession"
 import RandomUserSettings from "./randomUserSettings"
+import SessionButtons from "./SessionButtons"
 
 const baseURL = "http://localhost:8000"
 
@@ -12,7 +13,7 @@ class SessionBoard extends Component {
 		}
 	}
 
-	componentDidMount() {
+	fetchSessions = async () => {
 		fetch(baseURL + "/sessions")
 			.then(response => {
 				if (!response.ok) {
@@ -30,15 +31,22 @@ class SessionBoard extends Component {
 			})
 	}
 
+	componentDidMount() {
+		this.fetchSessions()
+	}
+
 	render() {
 		const { sessions } = this.state
 
 		return (
 			<div className="w-full absolute inset-0 flex flex-col">
-				<div>
+				<div className="flex flex-col">
 					{sessions.map((session, index) => (
 						<ChatSession key={index} session={session} />
 					))}
+					<div className="px-1">
+						<SessionButtons />
+					</div>
 				</div>
 				<RandomUserSettings />
 			</div>
