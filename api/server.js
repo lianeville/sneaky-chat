@@ -105,12 +105,37 @@ async function getSessions() {
 	}
 }
 
+async function createSession(name, pass) {
+	try {
+		await client.connect()
+		const session = {
+			created_at: new Date(),
+			session_name: name,
+			session_pass: pass,
+		}
+
+		const result = await sessionCollection.insertOne(session)
+		if (result.acknowledged) {
+			console.log("Session Added")
+		} else {
+			console.error("Session Failed to Add")
+		}
+	} catch (error) {
+		console.error("Error connecting to MongoDB:", error)
+	}
+}
+
 app.get("/session/:sessionId/:lastMessage?", async (req, res) => {
 	const messages = await getMessages(
 		req.params.sessionId,
 		req.params.lastMessage
 	)
 	res.json(messages)
+})
+
+app.post("/session/create", async (req, res) => {
+	const session = createSession(req.body.sessionName, req.body.password)
+	res.json(session)
 })
 
 app.get("/sessions", async (req, res) => {
