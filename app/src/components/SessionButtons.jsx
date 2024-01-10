@@ -41,6 +41,7 @@ const SessionButtons = () => {
 			const newSessionId = await response.json()
 
 			navigate("/session/" + newSessionId)
+			handleCancel()
 
 			console.log(newSessionId)
 		} catch (error) {
@@ -121,11 +122,13 @@ const SessionButtons = () => {
 					</div>
 				)}
 				{!creatingSession && !joiningPrivSession && (
-					<div className="flex w-full">
+					<div className="flex w-full whitespace-nowrap">
 						<button className="w-full mx-1" onClick={handleCreating}>
-							Create Session
+							New Session
 						</button>
-						<button className="w-full mx-1">Join Private Session</button>
+						<button className="w-full mx-1 whitespace-nowrap">
+							Join Private
+						</button>
 					</div>
 				)}
 			</div>

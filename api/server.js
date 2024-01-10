@@ -33,8 +33,15 @@ const {
 } = require("unique-names-generator")
 
 app.use(cors())
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+function sanitizeInput(input) {
+	if (typeof input === "string" || input instanceof String) {
+		return input.replace(/<\/?[^>]+(>|$)/g, "")
+	}
+	return input
+}
 
 async function getMessages(sessionId, beforeMessageId, limit = 30) {
 	try {
@@ -49,12 +56,12 @@ async function getMessages(sessionId, beforeMessageId, limit = 30) {
 			if (beforeMessage) {
 				query.created_at = {
 					$lt: new Date(beforeMessage.created_at),
-					$gte: new Date(0), // Adjust this date based on your minimum valid date
+					$gte: new Date(0),
 				}
 			}
 		}
 
-		let sessionMessages = messageCollection
+		const sessionMessages = messageCollection
 			.find(query)
 			.sort({ created_at: -1 })
 			.limit(limit)
@@ -65,7 +72,6 @@ async function getMessages(sessionId, beforeMessageId, limit = 30) {
 		return messages.reverse()
 	} catch (error) {
 		console.error("Error connecting to MongoDB:", error)
-		// Handle the error as needed
 	}
 }
 
@@ -96,10 +102,38 @@ async function getUsers(messages, usersCollection) {
 async function getSessions() {
 	try {
 		await client.connect()
-		let sessions = sessionCollection.find({})
-		sessions = await sessions.toArray()
+		const t0 = performance.now()
 
-		return sessions
+		let sessionsWithLatestMessages = await sessionCollection
+			.aggregate([
+				{
+					$lookup: {
+						from: "Messages",
+						let: { session_id: "$_id" },
+						pipeline: [
+							{
+								$match: {
+									$expr: { $eq: ["$session_id", "$$session_id"] },
+								},
+							},
+							{ $sort: { created_at: -1 } },
+							{ $limit: 1 },
+						],
+						as: "latestMessage",
+					},
+				},
+				{
+					$addFields: {
+						latestMessage: { $arrayElemAt: ["$latestMessage", 0] },
+					},
+				},
+			])
+			.toArray()
+
+		const t1 = performance.now()
+		console.log(`Call to doSomething took ${t1 - t0} milliseconds.`)
+
+		return sessionsWithLatestMessages
 	} catch (error) {
 		console.error("Error connecting to MongoDB:", error)
 	}
@@ -110,8 +144,8 @@ async function createSession(name, pass) {
 		await client.connect()
 		const session = {
 			created_at: new Date(),
-			session_name: name,
-			session_pass: pass,
+			session_name: sanitizeInput(name),
+			session_pass: sanitizeInput(pass),
 		}
 
 		const result = await sessionCollection.insertOne(session)
@@ -126,16 +160,29 @@ async function createSession(name, pass) {
 }
 
 app.get("/session/:sessionId/:lastMessage?", async (req, res) => {
-	const messages = await getMessages(
-		req.params.sessionId,
-		req.params.lastMessage
-	)
-	res.json(messages)
+	try {
+		const messages = await getMessages(
+			req.params.sessionId,
+			req.params.lastMessage
+		)
+		res.json(messages)
+	} catch (error) {
+		console.error("Error:", error)
+		res.status(500).json({ error: "Internal Server Error" })
+	}
 })
 
 app.post("/session/create", async (req, res) => {
-	const session = await createSession(req.body.sessionName, req.body.password)
-	res.json(session)
+	try {
+		const session = await createSession(
+			req.body.sessionName,
+			req.body.password
+		)
+		res.json(session)
+	} catch (error) {
+		console.error("Error:", error)
+		res.status(500).json({ error: "Internal Server Error" })
+	}
 })
 
 app.get("/sessions", async (req, res) => {
@@ -149,13 +196,16 @@ io.on("connection", socket => {
 	socket.on("message", async data => {
 		console.log("Message received:", data)
 
+		data.content.text_content = sanitizeInput(data.content.text_content)
 		let sessionId = data.sessionId
 		sessionId = new ObjectId(sessionId)
 
 		let message = data.content
-		message.session_id = sessionId
+
 		message.created_at = new Date()
-		message.user_seed = data.userSeed
+		message.session_id = sanitizeInput(sessionId)
+		message.text_content = sanitizeInput(message.text_content)
+		message.user_seed = sanitizeInput(data.userSeed)
 
 		if (!message.user_id) {
 			message.user_id = null
@@ -175,10 +225,8 @@ io.on("connection", socket => {
 			throw error // Re-throw the error
 		}
 
-		// Broadcast the message to all connected clients
 		io.emit("message", data)
 	})
 
-	// Handle disconnect
 	socket.on("disconnect", () => {})
 })

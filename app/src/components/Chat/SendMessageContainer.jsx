@@ -45,7 +45,7 @@ class SendMessageContainer extends Component {
 	render() {
 		return (
 			<div className="flex items-center p-2">
-				<form className="w-full flex" onSubmit={this.handleSubmit}>
+				<form className="h-full w-full flex" onSubmit={this.handleSubmit}>
 					<input
 						type="text"
 						placeholder={"Send a message as " + this.state.anonName}

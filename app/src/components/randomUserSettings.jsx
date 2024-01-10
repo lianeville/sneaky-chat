@@ -1,7 +1,7 @@
 import { Component } from "react"
 import { connect } from "react-redux"
-import { anonUser } from "../../reducers/anonUser"
-import ChatAvatar from "./ChatAvatar"
+import { anonUser } from "../reducers/anonUser"
+import ChatAvatar from "./Chat/ChatAvatar"
 
 class RandomUserSettings extends Component {
 	constructor(props) {

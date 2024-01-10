@@ -1,29 +1,23 @@
-import { Component } from "react"
+import React, { useEffect } from "react"
 import PropTypes from "prop-types"
 
-class ChatSession extends Component {
-	render() {
-		const { session } = this.props
-		const url = "session/" + session._id
+const ChatSession = ({ session }) => {
+	useEffect(() => {
+		console.log(session)
+	}, [session])
 
-		return (
+	const url = "session/" + session._id
+
+	return (
+		<div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-1">
 			<a
 				href={url}
-				className="bg-slate-300 flex p-2 my-2 items-center hover:cursor-pointer"
+				className="w-full bg-slate-300 flex p-2 items-center hover:cursor-pointer"
 			>
 				<p>{session.session_name}</p>
 			</a>
-		)
-	}
-}
-
-ChatSession.propTypes = {
-	session: PropTypes.shape({
-		created_at: PropTypes.string,
-		session_name: PropTypes.string,
-		users: PropTypes.array,
-		_id: PropTypes.string,
-	}),
+		</div>
+	)
 }
 
 export default ChatSession

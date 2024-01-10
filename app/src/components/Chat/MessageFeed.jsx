@@ -163,9 +163,11 @@ class MessageFeed extends Component {
 		const { messages } = this.state
 
 		return (
-			<div className="w-full absolute inset-0 flex flex-col-reverse">
-				<SendMessageContainer />
-				<div ref={this.messageFeedRef} className="h-full overflow-y-scroll">
+			<div className="h-full flex flex-col overflow-y-hidden justify-between">
+				<div
+					ref={this.messageFeedRef}
+					className="h-full flex flex-col overflow-y-auto"
+				>
 					{messages.map((message, index) => {
 						const isFirstMessage = index === 0
 						const isFollowUp =
@@ -189,6 +191,7 @@ class MessageFeed extends Component {
 					})}{" "}
 					<div ref={this.messagesEndRef} />
 				</div>
+				<SendMessageContainer />
 			</div>
 		)
 	}

@@ -1,7 +1,7 @@
 import { Component } from "react"
 import ChatSession from "./ChatSession"
-import RandomUserSettings from "./randomUserSettings"
-import SessionButtons from "./SessionButtons"
+import RandomUserSettings from "../randomUserSettings"
+import SessionButtons from "../SessionButtons"
 
 const baseURL = "http://localhost:8000"
 
@@ -39,15 +39,13 @@ class SessionBoard extends Component {
 		const { sessions } = this.state
 
 		return (
-			<div className="w-full absolute inset-0 flex flex-col">
-				<div className="flex flex-col">
+			<div className="w-full h-full inset-0 flex flex-col">
+				<div className="flex flex-wrap">
 					{sessions.map((session, index) => (
 						<ChatSession key={index} session={session} />
 					))}
-					<div className="px-1">
-						<SessionButtons />
-					</div>
 				</div>
+				{/* <SessionButtons /> */}
 				<RandomUserSettings />
 			</div>
 		)
