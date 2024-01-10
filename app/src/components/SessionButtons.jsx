@@ -21,7 +21,6 @@ const SessionButtons = () => {
 	}
 
 	const handleCreate = async () => {
-		console.log(sessionName, sessionPass)
 		try {
 			const response = await fetch(baseURL + "/session/create", {
 				method: "POST",
@@ -42,8 +41,6 @@ const SessionButtons = () => {
 
 			navigate("/session/" + newSessionId)
 			handleCancel()
-
-			console.log(newSessionId)
 		} catch (error) {
 			console.error("Error during POST request:", error)
 		}

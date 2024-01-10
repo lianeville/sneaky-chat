@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 
 const ChatSession = ({ session }) => {
 	useEffect(() => {
-		console.log(session)
+		// console.log(session)
 	}, [session])
 
 	const url = "session/" + session._id

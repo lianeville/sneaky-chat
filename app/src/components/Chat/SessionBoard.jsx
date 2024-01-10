@@ -40,7 +40,7 @@ class SessionBoard extends Component {
 
 		return (
 			<div className="w-full h-full inset-0 flex flex-col">
-				<div className="flex flex-wrap">
+				<div className="h-full flex flex-wrap">
 					{sessions.map((session, index) => (
 						<ChatSession key={index} session={session} />
 					))}
