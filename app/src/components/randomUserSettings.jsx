@@ -2,6 +2,7 @@ import { Component } from "react"
 import { connect } from "react-redux"
 import { anonUser } from "../reducers/anonUser"
 import ChatAvatar from "./Chat/ChatAvatar"
+import { FaDice } from "react-icons/fa6"
 
 class RandomUserSettings extends Component {
 	constructor(props) {
@@ -37,7 +38,10 @@ class RandomUserSettings extends Component {
 						<ChatAvatar seed={this.state.anonSeed} checkForUpdates />
 						<span>{this.state.anonName}</span>
 					</div>
-					<button onClick={this.handleClick}>Randomize</button>
+					<button className="flex items-center" onClick={this.handleClick}>
+						<FaDice className="mr-1 text-xl" />
+						Randomize
+					</button>
 				</div>
 			</div>
 		)

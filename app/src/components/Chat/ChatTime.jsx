@@ -18,13 +18,43 @@ const formatDate = dateString => {
 	}
 }
 
+const formatTimeAgo = dateString => {
+	const date = new Date(dateString)
+	const now = new Date()
+	const timeDifference = now - date
+
+	const seconds = Math.floor(timeDifference / 1000)
+	const minutes = Math.floor(seconds / 60)
+	const hours = Math.floor(minutes / 60)
+	const days = Math.floor(hours / 24)
+	const months = Math.floor(days / 30)
+	const years = Math.floor(months / 12)
+
+	if (seconds < 60) {
+		return `${seconds} ${seconds === 1 ? "second" : "seconds"} ago`
+	} else if (minutes < 60) {
+		return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`
+	} else if (hours < 24) {
+		return `${hours} ${hours === 1 ? "hour" : "hours"} ago`
+	} else if (days < 30) {
+		return `${days} ${days === 1 ? "day" : "days"} ago`
+	} else if (months < 12) {
+		return `${months} ${months === 1 ? "month" : "months"} ago`
+	} else {
+		return `${years} ${years === 1 ? "year" : "years"} ago`
+	}
+}
+
 class ChatTime extends Component {
 	render() {
-		return (
-			<div className="text-xs text-slate-400">
-				{formatDate(this.props.time)}
-			</div>
-		)
+		let time
+		if (this.props.timeAgo) {
+			time = formatTimeAgo(this.props.time)
+		} else {
+			time = formatDate(this.props.time)
+		}
+
+		return <div className="text-xs text-slate-400">{time}</div>
 	}
 }
 

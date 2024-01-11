@@ -2,6 +2,7 @@ import { Component } from "react"
 import { SocketContext } from "/src/context/SocketContext.jsx"
 import { connect } from "react-redux"
 import { anonUser } from "../../reducers/anonUser"
+import { FaPaperPlane } from "react-icons/fa6"
 
 class SendMessageContainer extends Component {
 	constructor(props) {
@@ -55,8 +56,9 @@ class SendMessageContainer extends Component {
 					></input>
 					<button
 						type="submit"
-						className="bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full"
+						className="bg-blue-500 hover:bg-blue-700 flex items-center text-white font-bold rounded-full"
 					>
+						<FaPaperPlane className="mr-1 text-xl" />
 						Send
 					</button>
 				</form>

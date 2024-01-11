@@ -102,36 +102,28 @@ async function getUsers(messages, usersCollection) {
 async function getSessions() {
 	try {
 		await client.connect()
-		const t0 = performance.now()
 
 		let sessionsWithLatestMessages = await sessionCollection
 			.aggregate([
 				{
 					$lookup: {
 						from: "Messages",
-						let: { session_id: "$_id" },
-						pipeline: [
-							{
-								$match: {
-									$expr: { $eq: ["$session_id", "$$session_id"] },
-								},
-							},
-							{ $sort: { created_at: -1 } },
-							{ $limit: 1 },
-						],
-						as: "latestMessage",
+						localField: "_id",
+						foreignField: "session_id",
+						as: "messages",
 					},
 				},
 				{
 					$addFields: {
-						latestMessage: { $arrayElemAt: ["$latestMessage", 0] },
+						messageCount: { $size: "$messages" },
+						latestMessage: { $arrayElemAt: ["$messages", -1] },
 					},
+				},
+				{
+					$unset: "messages",
 				},
 			])
 			.toArray()
-
-		const t1 = performance.now()
-		console.log(`Call to doSomething took ${t1 - t0} milliseconds.`)
 
 		return sessionsWithLatestMessages
 	} catch (error) {
