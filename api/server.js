@@ -151,6 +151,22 @@ async function createSession(name, pass) {
 	}
 }
 
+async function sendMessage(message) {
+	try {
+		await client.connect()
+
+		const result = await messageCollection.insertOne(message)
+		if (result.acknowledged) {
+			console.log("Message Sent")
+		} else {
+			console.error("Message Failed to send")
+		}
+	} catch (error) {
+		console.error("Error connecting to MongoDB:", error)
+		throw error // Re-throw the error
+	}
+}
+
 app.get("/session/:sessionId/:lastMessage?", async (req, res) => {
 	try {
 		const messages = await getMessages(
@@ -170,6 +186,13 @@ app.post("/session/create", async (req, res) => {
 			req.body.sessionName,
 			req.body.password
 		)
+
+		message = req.body.message
+		message.user_id = 0
+		message.created_at = new Date()
+		message.session_id = session
+		await sendMessage(message)
+
 		res.json(session)
 	} catch (error) {
 		console.error("Error:", error)

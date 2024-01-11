@@ -5,9 +5,11 @@ import { FaArrowLeftLong } from "react-icons/fa6"
 
 const Header = () => {
 	const location = window.location.pathname.split("/")[1]
-	const [inSession] = useState(location == "session")
+	const [inSession, setInSession] = useState(location == "session")
 
-	console.log(location, inSession)
+	useEffect(() => {
+		console.log(location)
+	})
 
 	return (
 		<header className="h-16 max-h-16 top-0 left-0 w-full bg-gray-800 text-white p-2 flex justify-between items-center">

@@ -9,6 +9,7 @@ import {
 } from "unique-names-generator"
 import { connect } from "react-redux"
 import { anonUser } from "../../reducers/anonUser"
+import { currentSession } from "../../reducers/currentSession"
 import debounce from "lodash.debounce"
 
 const baseURL = "http://localhost:8000"
@@ -22,15 +23,21 @@ class MessageFeed extends Component {
 			messages: [],
 			randomName: "",
 			loadedloadedAllMessages: false,
+			newSession: {},
+			creating: window.location.pathname.split("/")[2] == "create",
 		}
 		this.messagesEndRef = React.createRef()
 		this.messageFeedRef = React.createRef()
 		this.firstMessageRef = React.createRef()
 		this.observer = null
+
+		this.disableCreating = this.disableCreating.bind(this)
 	}
 
 	componentDidMount() {
 		const { socket } = this.context
+
+		this.props.updateSession(window.location.pathname.split("/")[2])
 
 		const randomNameConfig = {
 			dictionaries: [adjectives, animals],
@@ -39,7 +46,9 @@ class MessageFeed extends Component {
 			style: "capital",
 		}
 
-		this.fetchMessages()
+		if (!this.state.creating) {
+			this.fetchMessages()
+		}
 
 		socket.on("message", newMessage => {
 			const userSeed = newMessage.userSeed
@@ -145,6 +154,10 @@ class MessageFeed extends Component {
 		}
 	}
 
+	disableCreating() {
+		this.setState({ creating: false })
+	}
+
 	initializeObserver() {
 		this.observer = new IntersectionObserver(entries => {
 			entries.forEach(entry => {
@@ -191,18 +204,23 @@ class MessageFeed extends Component {
 					})}{" "}
 					<div ref={this.messagesEndRef} />
 				</div>
-				<SendMessageContainer />
+				<SendMessageContainer
+					creating={this.state.creating}
+					disableCreating={this.disableCreating}
+				/>
 			</div>
 		)
 	}
 }
 
-// Redux State Management
+// Redux State Management because i was dumb and made this component class-based for no reason and now im too far in to make it a functional component so instead ill just have these ugly lines here and youll just have to deal with it ok
 const mapStateToProps = state => ({
 	anonUser: state,
+	currentSession: state,
 })
 const mapDispatchToProps = {
 	updateName: anonUser.actions.updateName,
+	updateSession: currentSession.actions.updateSession,
 }
 const ConnectedMessageFeed = connect(
 	mapStateToProps,
