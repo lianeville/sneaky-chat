@@ -15,11 +15,11 @@ const SendMessageContainer = props => {
 	const { name: anonName, seed: anonSeed } = anonUserState
 
 	const [message, setMessage] = useState("")
-	const [pass, setPass] = useState("")
 	const [sessionName, setSessionName] = useState("")
 	const [userSeed, setUserSeed] = useState("")
 	const [anonNameState, setAnonNameState] = useState("")
-	const [isPrivSession, setIsPrivSession] = useState(true)
+	const [isPrivSession, setIsPrivSession] = useState(false)
+	const [isError, setIsError] = useState(false)
 	const seed = useSelector(state => state.anonUser.seed)
 
 	const { socket } = useContext(SocketContext)
@@ -37,10 +37,6 @@ const SendMessageContainer = props => {
 
 	const handleMessageChange = e => {
 		setMessage(e.target.value)
-	}
-
-	const handlePassChange = e => {
-		setPass(e.target.value)
 	}
 
 	const handleSessionNameChange = e => {
@@ -67,6 +63,8 @@ const SendMessageContainer = props => {
 	}
 
 	const handleCreate = async () => {
+		if (!(sessionName.length, message.length)) return errorTimeOut()
+
 		try {
 			const response = await fetch(baseURL + "/session/create", {
 				method: "POST",
@@ -75,7 +73,7 @@ const SendMessageContainer = props => {
 				},
 				body: JSON.stringify({
 					sessionName: sessionName,
-					password: pass,
+					private: isPrivSession,
 					message: { text_content: message, user_seed: seed },
 				}),
 			})
@@ -94,8 +92,27 @@ const SendMessageContainer = props => {
 		}
 	}
 
+	const errorTimeOut = () => {
+		setIsError(true)
+
+		const timeout = setTimeout(() => {
+			setIsError(false)
+		}, 4000)
+
+		return () => clearTimeout(timeout)
+	}
+
 	const creatingForm = (
 		<div className="flex flex-col">
+			<div
+				className={`w-full mb-2 flex justify-center transition-opacity ease-in-out ${
+					isError ? "opacity-100" : "opacity-0"
+				}`}
+			>
+				<div className="bg-red-200 bg-opacity-20 p-1 rounded-lg border-red-400 border">
+					<span className="text-red-400">Fill out all fields.</span>
+				</div>
+			</div>
 			<div className="flex">
 				<input
 					type="text"
@@ -104,39 +121,14 @@ const SendMessageContainer = props => {
 					value={sessionName}
 					onChange={handleSessionNameChange}
 				/>
-				{!isPrivSession && (
-					<div className="translate-y-2">
-						<ToggleComponent
-							isChecked={isPrivSession}
-							onToggle={handlePrivToggle}
-							label="Private"
-						/>
-					</div>
-				)}
-			</div>
-
-			{isPrivSession && (
-				<div className="flex justify-between">
-					<div className="w-full">
-						<div className="flex">
-							<input
-								type="text"
-								placeholder="Session Password"
-								className="focus:outline-none p-2 mb-2 mr-2 w-full bg-slate-600 rounded-lg text-left"
-								value={pass}
-								onChange={handlePassChange}
-							/>
-							<div className="translate-y-2">
-								<ToggleComponent
-									isChecked={isPrivSession}
-									onToggle={handlePrivToggle}
-									label="Private"
-								/>
-							</div>
-						</div>
-					</div>
+				<div className="translate-y-2">
+					<ToggleComponent
+						isChecked={isPrivSession}
+						onToggle={handlePrivToggle}
+						label="Private"
+					/>
 				</div>
-			)}
+			</div>
 		</div>
 	)
 

@@ -45,7 +45,6 @@ function sanitizeInput(input) {
 
 async function getMessages(sessionId, beforeMessageId, limit = 30) {
 	try {
-		await client.connect()
 		sessionId = new ObjectId(sessionId)
 
 		let query = { session_id: sessionId }
@@ -101,8 +100,6 @@ async function getUsers(messages, usersCollection) {
 
 async function getSessions() {
 	try {
-		await client.connect()
-
 		let sessionsWithLatestMessages = await sessionCollection
 			.aggregate([
 				{
@@ -131,30 +128,28 @@ async function getSessions() {
 	}
 }
 
-async function createSession(name, pass) {
+async function getSessionInfo(sessionId) {
 	try {
-		await client.connect()
-		const session = {
-			created_at: new Date(),
-			session_name: sanitizeInput(name),
-			session_pass: sanitizeInput(pass),
-		}
+		const session = await sessionCollection.findOne({
+			_id: new ObjectId(sessionId),
+		})
 
-		const result = await sessionCollection.insertOne(session)
-		if (result.acknowledged) {
-			return result.insertedId
+		if (session) {
+			return session
 		} else {
-			console.error("Session Failed to Add")
+			console.error("Session not found")
+			// You can choose to throw an error, return a specific value, or handle it differently based on your requirements.
+			return null
 		}
 	} catch (error) {
-		console.error("Error connecting to MongoDB:", error)
+		console.error("Error retrieving session information from MongoDB:", error)
+		// You can choose to throw an error, return a specific value, or handle it differently based on your requirements.
+		return null
 	}
 }
 
 async function sendMessage(message) {
 	try {
-		await client.connect()
-
 		const result = await messageCollection.insertOne(message)
 		if (result.acknowledged) {
 			console.log("Message Sent")
@@ -173,7 +168,13 @@ app.get("/session/:sessionId/:lastMessage?", async (req, res) => {
 			req.params.sessionId,
 			req.params.lastMessage
 		)
-		res.json(messages)
+
+		if (req.params.lastMessage) {
+			res.json(messages)
+		} else {
+			const sessionInfo = await getSessionInfo(req.params.sessionId)
+			res.json({ session: sessionInfo, messages: messages })
+		}
 	} catch (error) {
 		console.error("Error:", error)
 		res.status(500).json({ error: "Internal Server Error" })
@@ -184,7 +185,7 @@ app.post("/session/create", async (req, res) => {
 	try {
 		const session = await createSession(
 			req.body.sessionName,
-			req.body.password
+			req.body.private
 		)
 
 		message = req.body.message
@@ -227,8 +228,6 @@ io.on("connection", socket => {
 		}
 
 		try {
-			await client.connect()
-
 			const result = await messageCollection.insertOne(message)
 			if (result.acknowledged) {
 				console.log("Message Sent")

@@ -12,7 +12,11 @@ const ToggleComponent = props => {
 				onChange={props.onToggle}
 			/>
 			<label htmlFor="toggle" className="cursor-pointer flex">
-				<div className="w-10 h-6 bg-gray-400 rounded-full p-1 flex items-center">
+				<div
+					className={`w-10 h-6 rounded-full p-1 flex items-center transition-colors ${
+						props.isChecked ? "bg-blue-500" : "bg-gray-400"
+					}`}
+				>
 					<div
 						id="indicator"
 						className="w-4 h-4 bg-white rounded-full shadow-md transform transition-transform"

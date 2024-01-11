@@ -11,6 +11,10 @@ import { connect } from "react-redux"
 import { anonUser } from "../../reducers/anonUser"
 import { currentSession } from "../../reducers/currentSession"
 import debounce from "lodash.debounce"
+import ChatTime from "./ChatTime"
+import { FaLink } from "react-icons/fa6"
+import { ToastContainer, toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 const baseURL = "http://localhost:8000"
 
@@ -21,6 +25,7 @@ class MessageFeed extends Component {
 		super(props)
 		this.state = {
 			messages: [],
+			sessionInfo: {},
 			randomName: "",
 			loadedloadedAllMessages: false,
 			newSession: {},
@@ -85,11 +90,12 @@ class MessageFeed extends Component {
 				}
 				return response.json()
 			})
-			.then(messages => {
+			.then(data => {
 				if (lastId !== "") {
-					if (messages.length === 0) {
+					const messages = data
+
+					if (messages.length != 30) {
 						this.setState({ loadedAllMessages: true })
-						return
 					}
 
 					const feed = this.messageFeedRef.current
@@ -104,9 +110,23 @@ class MessageFeed extends Component {
 							scrollPositionBeforeLoad
 					})
 				} else {
-					this.setState({ messages }, () => {
-						this.scrollToBottom(true)
-					})
+					const messages = data.messages
+
+					if (messages.length != 30) {
+						this.setState({ loadedAllMessages: true })
+					}
+
+					this.setState(
+						{
+							sessionInfo: data.session,
+							messages: messages,
+						},
+						() => {
+							this.scrollToBottom(true)
+							console.log(this.state.sessionInfo)
+							document.title = this.state.sessionInfo.session_name
+						}
+					)
 				}
 				this.initializeObserver()
 			})
@@ -172,15 +192,58 @@ class MessageFeed extends Component {
 		}
 	}
 
+	onClickCopy() {
+		navigator.clipboard.writeText(window.location.href)
+		toast.info("Link Copied", {
+			position: "bottom-center",
+			autoClose: 2000,
+			hideProgressBar: true,
+			closeOnClick: true,
+			pauseOnHover: false,
+			draggable: false,
+			theme: "colored",
+		})
+	}
+
 	render() {
 		const { messages } = this.state
 
 		return (
 			<div className="h-full flex flex-col overflow-y-hidden justify-between">
+				<ToastContainer />
 				<div
 					ref={this.messageFeedRef}
 					className="h-full flex flex-col overflow-y-auto"
 				>
+					{this.state.loadedAllMessages && (
+						<div className="w-full flex justify-between items-center">
+							<div className="w-full flex flex-col items-center">
+								<span className="text-4xl my-2">
+									{this.state.sessionInfo.session_name}
+								</span>
+								<div className="flex items-center">
+									<span className="text-gray-400 text-sm mr-1">
+										started
+									</span>
+									{
+										<ChatTime
+											time={this.state.sessionInfo.created_at}
+											timeAgo
+										/>
+									}
+								</div>
+							</div>
+							<div className="w-1/2 -ml-2">
+								<button
+									onClick={this.onClickCopy}
+									className="w-fit p-2 rounded-xl flex items-center bg-slate-800"
+								>
+									<FaLink className="text-2xl" />
+									<span className="text-xl ml-1">Copy Link</span>
+								</button>
+							</div>
+						</div>
+					)}
 					{messages.map((message, index) => {
 						const isFirstMessage = index === 0
 						const isFollowUp =
