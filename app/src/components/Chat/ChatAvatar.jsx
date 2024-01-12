@@ -39,8 +39,13 @@ class ChatAvatar extends Component {
 				) : (
 					<div
 						ref={div => (this.avatarDiv = div)}
-						style={{ backgroundColor: stringToColor(seed) }}
-						className="p-5 mr-2 bg-slate-800 rounded-full"
+						style={{
+							backgroundColor: stringToColor(seed),
+							// padding: this.props.size || "5px",
+						}}
+						className={`p-${
+							this.props.size || 5
+						} mr-2 bg-slate-800 rounded-full`}
 					></div>
 				)}
 			</div>

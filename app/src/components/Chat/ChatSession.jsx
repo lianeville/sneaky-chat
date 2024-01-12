@@ -3,6 +3,8 @@ import PropTypes from "prop-types"
 import { FaRegMessage } from "react-icons/fa6"
 import ChatTime from "./ChatTime"
 import ChatAvatar from "./ChatAvatar"
+import { FaArrowTurnUp } from "react-icons/fa6"
+import NameFromSeed from "../NameFromSeed"
 
 const ChatSession = ({ session }) => {
 	useEffect(() => {
@@ -12,7 +14,7 @@ const ChatSession = ({ session }) => {
 	const url = "session/" + session._id
 
 	const messageCount = (
-		<span>
+		<span className="text-xs">
 			{session.messageCount} message{session.messageCount == 1 ? "" : "s"}
 		</span>
 	)
@@ -20,28 +22,42 @@ const ChatSession = ({ session }) => {
 	let latestMessage
 	if (session.latestMessage) {
 		latestMessage = (
-			<div className="flex items-center">
-				<ChatAvatar seed={session.latestMessage.user_seed} />
-				<span>{session.latestMessage.text_content}</span>
+			<div className="flex w-full">
+				<div className="rotate-90 w-fit mr-2 -ml-1">
+					<FaArrowTurnUp className="text-lg" />
+				</div>
+				<div className="w-full flex items-center overflow-hidden">
+					<ChatAvatar size="3" seed={session.latestMessage.user_seed} />
+					<span className="text-sm -ml-1 truncate">
+						<span className="mr-1 italic">
+							<NameFromSeed seed={session.latestMessage.user_seed} />:
+						</span>
+						{session.latestMessage.text_content}
+					</span>
+				</div>
 			</div>
 		)
 	}
 
 	return (
-		<div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-1">
+		<div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2">
 			<a
 				href={url}
-				className="w-full h-full bg-slate-300 flex flex-col p-2 hover:cursor-pointer"
+				className="w-full h-full bg-slate-600 flex flex-col p-3 hover:cursor-pointer text-white hover:text-white rounded-xl"
 			>
-				<span>{session.session_name}</span>
-				<div className="flex justify-between">
-					<div className="flex items-center text-sm">
+				<div className="flex flex-col justify-between">
+					<div className="w-full mb-1 flex justify-between items-center text-sm">
+						<span className="font-bold text-lg truncate mr-1">
+							{session.session_name}
+						</span>
+						<ChatTime time={session.created_at} timeAgo={true} />
+					</div>
+					<div className="flex items-center text-gray-300 my-1 mb-2">
 						<FaRegMessage className="mr-1" />
 						{messageCount}
 					</div>
-					<ChatTime time={session.created_at} timeAgo={true} />
+					<div className="flex text-gray-300">{latestMessage}</div>
 				</div>
-				{latestMessage}
 			</a>
 		</div>
 	)

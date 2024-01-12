@@ -54,7 +54,9 @@ class ChatTime extends Component {
 			time = formatDate(this.props.time)
 		}
 
-		return <div className="text-xs text-slate-400">{time}</div>
+		return (
+			<div className="text-xs text-slate-400 whitespace-nowrap">{time}</div>
+		)
 	}
 }
 

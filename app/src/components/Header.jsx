@@ -12,9 +12,9 @@ const Header = () => {
 	})
 
 	return (
-		<header className="h-16 max-h-16 top-0 left-0 w-full bg-gray-800 text-white p-2 flex justify-between items-center">
+		<header className="top-0 left-0 w-full bg-gray-800 text-white p-2 flex justify-between items-center">
 			{inSession ? (
-				<div className="hover:bg-slate-600 rounded-full">
+				<div className="hover:bg-slate-600 rounded-full p-[1px]">
 					<a href="/" className="text-white hover:text-white ">
 						<div className="p-2">
 							<FaArrowLeftLong className="text-3xl" />
@@ -22,11 +22,15 @@ const Header = () => {
 					</a>
 				</div>
 			) : (
-				<div className="mx-2">
+				<div className="mx-2 my-1">
 					<SessionButtons />
 				</div>
 			)}
-			<h1 className="text-2xl font-bold mx-2">silly chat</h1>
+			<a href="/">
+				<h1 className="text-2xl font-bold mx-2 text-white hover:text-white">
+					silly chat
+				</h1>
+			</a>
 		</header>
 	)
 }

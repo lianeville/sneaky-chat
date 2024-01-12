@@ -17,7 +17,6 @@ class MessageContainer extends Component {
 			paddingBottom: ".5rem",
 		}
 		if (followed) {
-			// containerStyle.marginBottom = 0
 			containerStyle.paddingBottom = ".25rem"
 		}
 		if (followUp) {

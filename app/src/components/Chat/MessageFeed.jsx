@@ -218,7 +218,7 @@ class MessageFeed extends Component {
 					{this.state.loadedAllMessages && (
 						<div className="w-full flex justify-between items-center">
 							<div className="w-full flex flex-col items-center">
-								<span className="text-4xl my-2">
+								<span className="max-w-xs text-4xl my-2 truncate">
 									{this.state.sessionInfo.session_name}
 								</span>
 								<div className="flex items-center">

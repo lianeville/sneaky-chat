@@ -128,6 +128,25 @@ async function getSessions() {
 	}
 }
 
+async function createSession(name, pass) {
+	try {
+		await client.connect()
+		const session = {
+			created_at: new Date(),
+			session_name: sanitizeInput(name),
+			session_pass: sanitizeInput(pass),
+		}
+		const result = await sessionCollection.insertOne(session)
+		if (result.acknowledged) {
+			return result.insertedId
+		} else {
+			console.error("Session Failed to Add")
+		}
+	} catch (error) {
+		console.error("Error connecting to MongoDB:", error)
+	}
+}
+
 async function getSessionInfo(sessionId) {
 	try {
 		const session = await sessionCollection.findOne({

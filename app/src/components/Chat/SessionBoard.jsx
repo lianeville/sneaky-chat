@@ -39,13 +39,12 @@ class SessionBoard extends Component {
 		const { sessions } = this.state
 
 		return (
-			<div className="w-full h-full inset-0 flex flex-col">
-				<div className="h-full flex flex-wrap">
+			<div className="w-full h-full inset-0 flex flex-col overflow-y-hidden">
+				<div className="h-full flex flex-wrap overflow-y-auto">
 					{sessions.map((session, index) => (
 						<ChatSession key={index} session={session} />
 					))}
 				</div>
-				{/* <SessionButtons /> */}
 				<RandomUserSettings />
 			</div>
 		)
