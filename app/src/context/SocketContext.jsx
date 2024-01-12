@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux" // Import the useSelector hook
 import { createContext, useContext, useEffect } from "react"
 import io from "socket.io-client"
+const dbHost = import.meta.env.VITE_DB_HOST
 
 export const SocketContext = createContext()
 
@@ -8,7 +9,7 @@ export const SocketProvider = ({ children }) => {
 	const sessionId = window.location.pathname.split("/")[2]
 	const userSeed = localStorage.getItem("userSeed")
 
-	const socket = io("http://localhost:8000", {
+	const socket = io(dbHost, {
 		query: { sessionId: sessionId, userSeed: userSeed }, // Pass userSeed as a query parameter
 	})
 

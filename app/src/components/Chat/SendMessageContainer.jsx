@@ -6,7 +6,7 @@ import ToggleComponent from "../ToggleComponent"
 import { SocketContext } from "/src/context/SocketContext.jsx"
 import { useNavigate } from "react-router-dom"
 
-const baseURL = "http://localhost:8000"
+const dbHost = import.meta.env.VITE_DB_HOST
 
 const SendMessageContainer = props => {
 	let creating = props.creating
@@ -66,7 +66,7 @@ const SendMessageContainer = props => {
 		if (!(sessionName.length, message.length)) return errorTimeOut()
 
 		try {
-			const response = await fetch(baseURL + "/session/create", {
+			const response = await fetch(dbHost + "/session/create", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -121,13 +121,13 @@ const SendMessageContainer = props => {
 					value={sessionName}
 					onChange={handleSessionNameChange}
 				/>
-				<div className="translate-y-2">
+				{/* <div className="translate-y-2">
 					<ToggleComponent
 						isChecked={isPrivSession}
 						onToggle={handlePrivToggle}
 						label="Private"
 					/>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	)

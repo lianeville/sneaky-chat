@@ -16,7 +16,7 @@ import { FaLink } from "react-icons/fa6"
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
-const baseURL = "http://localhost:8000"
+const dbHost = import.meta.env.VITE_DB_HOST
 
 class MessageFeed extends Component {
 	static contextType = SocketContext
@@ -81,7 +81,7 @@ class MessageFeed extends Component {
 	fetchMessages(lastId = "") {
 		if (this.state.loadedAllMessages) return
 
-		fetch(baseURL + window.location.pathname + "/" + lastId)
+		fetch(dbHost + window.location.pathname + "/" + lastId)
 			.then(response => {
 				if (!response.ok) {
 					throw new Error("Network response was not ok")

@@ -28,7 +28,6 @@ const usersCollection = db.collection("Users")
 const {
 	uniqueNamesGenerator,
 	adjectives,
-	colors,
 	animals,
 } = require("unique-names-generator")
 
@@ -228,8 +227,8 @@ app.get("/sessions", async (req, res) => {
 	res.json(sessions)
 })
 
+// Socket.io integration
 const sessions = {} // Keep track of connected sessions
-
 io.on("connection", socket => {
 	const connectedSessionId = socket.handshake.query.sessionId
 	// const userSeed = socket.handshake.query.userSeed

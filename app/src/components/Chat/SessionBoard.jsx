@@ -3,7 +3,7 @@ import ChatSession from "./ChatSession"
 import RandomUserSettings from "../randomUserSettings"
 import SessionButtons from "../SessionButtons"
 
-const baseURL = "http://localhost:8000"
+const dbHost = import.meta.env.VITE_DB_HOST
 
 class SessionBoard extends Component {
 	constructor(props) {
@@ -14,7 +14,7 @@ class SessionBoard extends Component {
 	}
 
 	fetchSessions = async () => {
-		fetch(baseURL + "/sessions")
+		fetch(dbHost + "/sessions")
 			.then(response => {
 				if (!response.ok) {
 					throw new Error("Network response was not ok")
