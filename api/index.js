@@ -11,11 +11,11 @@ app.use("/", (req, res) => {
 	res.send("hui")
 })
 
-// const io = require("socket.io")(server, {
-// 	cors: {
-// 		origin: "*",
-// 	},
-// })
+const io = require("socket.io")(server, {
+	cors: {
+		origin: "*",
+	},
+})
 
 // const { MongoClient, ObjectId } = require("mongodb")
 
