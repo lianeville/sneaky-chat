@@ -16,7 +16,7 @@ const io = require("socket.io")(server, {
 const { MongoClient, ObjectId } = require("mongodb")
 
 const dotenv = require("dotenv")
-const config = dotenv.config({ path: "../.env" })
+const config = dotenv.config({ path: ".env" })
 const uri = config.parsed.mongoURI
 
 const client = new MongoClient(uri)

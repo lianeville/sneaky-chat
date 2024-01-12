@@ -12,6 +12,6 @@
 	"scripts": {
 		"start-dev": "concurrently \"npm run start-app\" \"npm run start-api\"",
 		"start-app": "cd app/ && npm run dev",
-		"start-api": "cd api/ && nodemon server.js"
+		"start-api": "cd api/ && nodemon index.js"
 	}
 }
