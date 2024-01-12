@@ -19,9 +19,9 @@ const io = require("socket.io")(server, {
 
 const { MongoClient, ObjectId } = require("mongodb")
 
-const dotenv = require("dotenv")
-const config = dotenv.config({ path: ".env" })
-const uri = config.parsed.mongoURI
+// const dotenv = require("dotenv")
+// const config = dotenv.config({ path: ".env" })
+// const uri = config.parsed.mongoURI
 
 // const client = new MongoClient(uri)
 // const db = client.db("Chat-App")
