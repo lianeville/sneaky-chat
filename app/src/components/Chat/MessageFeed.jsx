@@ -42,8 +42,6 @@ class MessageFeed extends Component {
 	componentDidMount() {
 		const { socket } = this.context
 
-		this.props.updateSession(window.location.pathname.split("/")[2])
-
 		const randomNameConfig = {
 			dictionaries: [adjectives, animals],
 			separator: " ",
@@ -123,7 +121,6 @@ class MessageFeed extends Component {
 						},
 						() => {
 							this.scrollToBottom(true)
-							console.log(this.state.sessionInfo)
 							document.title = this.state.sessionInfo.session_name
 						}
 					)

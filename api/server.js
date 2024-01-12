@@ -32,6 +32,12 @@ const {
 	animals,
 } = require("unique-names-generator")
 
+const randomNameConfig = {
+	dictionaries: [adjectives, animals],
+	separator: " ",
+	style: "capital",
+}
+
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -78,13 +84,10 @@ async function getUsers(messages, usersCollection) {
 	let sessionUsers = {}
 	for (const message of messages) {
 		if (!message.user_id) {
-			const randomNameConfig = {
-				dictionaries: [adjectives, animals],
-				separator: " ",
+			const randomName = uniqueNamesGenerator({
+				...randomNameConfig,
 				seed: message.user_seed || 123,
-				style: "capital",
-			}
-			const randomName = uniqueNamesGenerator(randomNameConfig)
+			})
 			message.user = { name: randomName, _id: 0 }
 		} else if (sessionUsers.hasOwnProperty(message.user_id)) {
 			message.user = sessionUsers[message.user_id]
@@ -225,12 +228,29 @@ app.get("/sessions", async (req, res) => {
 	res.json(sessions)
 })
 
-// Socket.io integration
+const sessions = {} // Keep track of connected sessions
+
 io.on("connection", socket => {
+	const connectedSessionId = socket.handshake.query.sessionId
+	// const userSeed = socket.handshake.query.userSeed
+
+	// let user
+	// if (userSeed) {
+	// 	user = uniqueNamesGenerator({
+	// 		...randomNameConfig,
+	// 		seed: userSeed,
+	// 	})
+	// 	console.log(user + " connected to " + connectedSessionId)
+	// }
+
+	// Store the socket in the sessions object
+	if (!sessions[connectedSessionId]) {
+		sessions[connectedSessionId] = []
+	}
+	sessions[connectedSessionId].push(socket)
+
 	// Handle incoming messages
 	socket.on("message", async data => {
-		console.log("Message received:", data)
-
 		data.content.text_content = sanitizeInput(data.content.text_content)
 		let sessionId = data.sessionId
 		sessionId = new ObjectId(sessionId)
@@ -258,8 +278,24 @@ io.on("connection", socket => {
 			throw error // Re-throw the error
 		}
 
-		io.emit("message", data)
+		// Emit message only to sockets in the correct session
+		if (sessions[connectedSessionId]) {
+			sessions[connectedSessionId].forEach(sessionSocket => {
+				sessionSocket.emit("message", data)
+			})
+		}
 	})
 
-	socket.on("disconnect", () => {})
+	socket.on("disconnect", () => {
+		// if (userSeed) {
+		// 	console.log(user + " disconnected from " + connectedSessionId)
+		// }
+
+		// Remove the socket from the sessions object
+		if (sessions[connectedSessionId]) {
+			sessions[connectedSessionId] = sessions[connectedSessionId].filter(
+				sessionSocket => sessionSocket !== socket
+			)
+		}
+	})
 })

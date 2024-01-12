@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-function stringToColor(seed) {
+function stringToColorWithOutline(seed) {
 	if (!seed) {
 		seed = "123abc"
 	}
@@ -9,12 +9,17 @@ function stringToColor(seed) {
 	seed.split("").forEach(char => {
 		hash = char.charCodeAt(0) + ((hash << 5) - hash)
 	})
-	let colour = "#"
+	let color = "#"
+	let darkerColor = "#"
 	for (let i = 0; i < 3; i++) {
 		const value = (hash >> (i * 8)) & 0xff
-		colour += value.toString(16).padStart(2, "0")
+
+		color += value.toString(16).padStart(2, "0")
+
+		const darkerValue = Math.max(0, value - 25)
+		darkerColor += darkerValue.toString(16).padStart(2, "0")
 	}
-	return colour
+	return [color, darkerColor]
 }
 
 class ChatAvatar extends Component {
@@ -23,32 +28,26 @@ class ChatAvatar extends Component {
 		// Check if the seed prop has changed
 		if (this.props.seed !== prevProps.seed) {
 			// Update the backgroundColor with the new seed
-			const newColor = stringToColor(this.props.seed)
-			this.avatarDiv.style.backgroundColor = newColor
+			const newColors = stringToColorWithOutline(this.props.seed)
+			this.avatarDiv.style.backgroundColor = newColors[0]
 		}
 	}
 
 	render() {
 		const { seed } = this.props
-		const { hidden } = this.props
+		const { size = 1.25 } = this.props
+
+		const colors = stringToColorWithOutline(seed)
 
 		return (
-			<div>
-				{hidden ? (
-					<div className="px-5 mr-2"></div>
-				) : (
-					<div
-						ref={div => (this.avatarDiv = div)}
-						style={{
-							backgroundColor: stringToColor(seed),
-							// padding: this.props.size || "5px",
-						}}
-						className={`p-${
-							this.props.size || 5
-						} mr-2 bg-slate-800 rounded-full`}
-					></div>
-				)}
-			</div>
+			<div
+				ref={div => (this.avatarDiv = div)}
+				style={{
+					backgroundImage: `linear-gradient(${colors[0]}, ${colors[1]})`,
+					padding: size + "em",
+				}}
+				className="mr-2 bg-slate-800 rounded-full"
+			></div>
 		)
 	}
 }

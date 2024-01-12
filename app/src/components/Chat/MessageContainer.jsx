@@ -29,7 +29,11 @@ class MessageContainer extends Component {
 				style={containerStyle}
 				className="bg-slate-700 px-2 flex items-center hover:bg-slate-600"
 			>
-				<ChatAvatar seed={message.user_seed} hidden={followUp} />
+				{followUp ? (
+					<div className="px-5 mr-2"></div>
+				) : (
+					<ChatAvatar seed={message.user_seed} />
+				)}
 				<div className="flex flex-col w-full">
 					{followUp ? (
 						<></>

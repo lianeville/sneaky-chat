@@ -27,7 +27,7 @@ const ChatSession = ({ session }) => {
 					<FaArrowTurnUp className="text-lg" />
 				</div>
 				<div className="w-full flex items-center overflow-hidden">
-					<ChatAvatar size="3" seed={session.latestMessage.user_seed} />
+					<ChatAvatar size=".65" seed={session.latestMessage.user_seed} />
 					<span className="text-sm -ml-1 truncate">
 						<span className="mr-1 italic">
 							<NameFromSeed seed={session.latestMessage.user_seed} />:
