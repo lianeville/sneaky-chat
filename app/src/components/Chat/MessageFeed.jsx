@@ -219,7 +219,7 @@ class MessageFeed extends Component {
 									{this.state.sessionInfo.session_name}
 								</span>
 								<div className="flex items-center">
-									<span className="text-gray-400 text-sm mr-1">
+									<span className="text-gray-400 text-xs mr-1">
 										started
 									</span>
 									{
