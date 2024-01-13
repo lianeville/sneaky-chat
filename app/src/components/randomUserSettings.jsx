@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 import { anonUser } from "../reducers/anonUser"
 import ChatAvatar from "./Chat/ChatAvatar"
 import { FaDice } from "react-icons/fa6"
+import NameFromSeed from "./NameFromSeed"
 
 class RandomUserSettings extends Component {
 	constructor(props) {
@@ -36,7 +37,7 @@ class RandomUserSettings extends Component {
 				<div className="w-full max-w-xl flex justify-between">
 					<div className="flex items-center">
 						<ChatAvatar seed={this.state.anonSeed} checkForUpdates />
-						<span>{this.state.anonName}</span>
+						<NameFromSeed seed={this.state.anonSeed} />
 					</div>
 					<button className="flex items-center" onClick={this.handleClick}>
 						<FaDice className="mr-1 text-xl" />
