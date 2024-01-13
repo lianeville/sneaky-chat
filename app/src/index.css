@@ -13,6 +13,9 @@
 	color: rgba(255, 255, 255, 0.87);
 	background-color: rgb(51 65 85);
 
+	height: 100%;
+	overflow-y: hidden;
+
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
@@ -34,7 +37,8 @@ body {
 	display: flex;
 	place-items: center;
 	min-width: 320px;
-	min-height: 100vh;
+	height: 100%;
+	/* overflow-y: auto; */
 }
 
 h1 {

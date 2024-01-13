@@ -7,7 +7,7 @@ import Header from "./components/Header.jsx"
 
 export default function App() {
 	return (
-		<div className="flex flex-col h-screen">
+		<div className="flex flex-col h-full">
 			<Header />
 			<SocketProvider>
 				<Routes>
