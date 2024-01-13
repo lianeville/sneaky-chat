@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@redux-devtools/extension": "^3.3.0",
+    "@reduxjs/toolkit": "^2.0.1",
     "localforage": "^1.10.0",
     "lodash.debounce": "^4.0.8",
     "match-sorter": "^6.3.1",
