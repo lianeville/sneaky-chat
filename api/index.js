@@ -6,6 +6,7 @@ const dbName = process.env.dbName
 
 const app = express()
 const server = app.listen(port, () => {
+	console.log("Hii!")
 	console.log(`Server is running on port ${port}`)
 })
 
