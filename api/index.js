@@ -20,9 +20,10 @@ const { MongoClient, ObjectId } = require("mongodb")
 // const uri = config.parsed.mongoURI
 
 const uri = process.env.mongoURI
+const dbName = process.env.dbName
 
 const client = new MongoClient(uri)
-const db = client.db("Chat-App")
+const db = client.db(dbName)
 const sessionCollection = db.collection("Sessions")
 const messageCollection = db.collection("Messages")
 const usersCollection = db.collection("Users")
