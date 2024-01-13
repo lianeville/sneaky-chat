@@ -14,7 +14,7 @@ class SessionBoard extends Component {
 	}
 
 	fetchSessions = async () => {
-		fetch(dbHost + "/sessions")
+		fetch(dbHost + "/")
 			.then(response => {
 				if (!response.ok) {
 					throw new Error("Network response was not ok")

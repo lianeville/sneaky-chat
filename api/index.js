@@ -224,7 +224,7 @@ app.post("/session/create", async (req, res) => {
 	}
 })
 
-app.get("/sessions", async (req, res) => {
+app.get("/", async (req, res) => {
 	const sessions = await getSessions()
 	res.json(sessions)
 })
