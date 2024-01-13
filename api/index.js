@@ -1,6 +1,8 @@
 const express = require("express")
 const cors = require("cors")
-const port = 8000
+const port = process.env.port || 3000
+const uri = process.env.mongoURI
+const dbName = process.env.dbName
 
 const app = express()
 const server = app.listen(port, () => {
@@ -18,9 +20,6 @@ const { MongoClient, ObjectId } = require("mongodb")
 // const dotenv = require("dotenv")
 // const config = dotenv.config({ path: ".env" })
 // const uri = config.parsed.mongoURI
-
-const uri = process.env.mongoURI
-const dbName = process.env.dbName
 
 const client = new MongoClient(uri)
 const db = client.db(dbName)
