@@ -10,7 +10,10 @@ export const SocketProvider = ({ children }) => {
 	const userSeed = localStorage.getItem("userSeed")
 
 	const socket = io(dbHost, {
-		query: { sessionId: sessionId, userSeed: userSeed }, // Pass userSeed as a query parameter
+		path: "/socket.io",
+		transports: ["websocket"],
+		secure: true,
+		query: { sessionId: sessionId, userSeed: userSeed },
 	})
 
 	useEffect(() => {
