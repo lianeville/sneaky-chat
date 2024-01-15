@@ -213,31 +213,38 @@ class MessageFeed extends Component {
 					className="h-full flex flex-col overflow-y-auto"
 				>
 					{this.state.loadedAllMessages && (
-						<div className="w-full flex justify-between items-center">
-							<div className="w-full flex flex-col items-center">
-								<span className="max-w-xs text-4xl my-2 truncate">
-									{this.state.sessionInfo.session_name}
-								</span>
-								<div className="flex items-center">
-									<span className="text-gray-400 text-xs mr-1">
-										started
-									</span>
-									{
-										<ChatTime
-											time={this.state.sessionInfo.created_at}
-											timeAgo
-										/>
-									}
+						<div className="w-full max-w-full">
+							<div className="p-2 w-full max-w-full flex justify-around items-center">
+								<div className="flex-shrink flex flex-col items-center overflow-auto">
+									<div className="max-w-full p-2 truncate">
+										<span
+											className="text-4xl leading-normal"
+											title={this.state.sessionInfo.session_name}
+										>
+											{this.state.sessionInfo.session_name}
+										</span>
+									</div>
+									<div className="flex items-center">
+										<span className="text-gray-400 text-xs mr-1">
+											started
+										</span>
+										{
+											<ChatTime
+												time={this.state.sessionInfo.created_at}
+												timeAgo
+											/>
+										}
+									</div>
 								</div>
-							</div>
-							<div className="w-1/2 -ml-2">
-								<button
-									onClick={this.onClickCopy}
-									className="w-fit p-2 rounded-xl flex items-center bg-slate-800"
-								>
-									<FaLink className="text-2xl" />
-									<span className="text-xl ml-1">Copy Link</span>
-								</button>
+								<div className="flex-shrink-0 -ml-2">
+									<button
+										onClick={this.onClickCopy}
+										className="w-fit p-2 rounded-xl flex items-center bg-slate-800"
+									>
+										<FaLink className="text-2xl" />
+										<span className="text-xl ml-1">Copy Link</span>
+									</button>
+								</div>
 							</div>
 						</div>
 					)}

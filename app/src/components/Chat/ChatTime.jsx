@@ -31,7 +31,7 @@ const formatTimeAgo = dateString => {
 	const years = Math.floor(months / 12)
 
 	if (seconds < 60) {
-		return `${seconds} ${seconds === 1 ? "second" : "seconds"} ago`
+		return `a few seconds ago`
 	} else if (minutes < 60) {
 		return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`
 	} else if (hours < 24) {
