@@ -1,6 +1,6 @@
 # Silly Chat
 
-[Silly Chat](https://silly-chat-frontend.up.railway.app/) is a lightweight and fun chat application that allows users to engage in public and anonymous conversations without the hassle of creating an account. Embrace the spontaneity of chat sessions with a unique user experience that doesn't require any mandatory registrations.
+Silly Chat is a lightweight and fun chat application that allows users to engage in public and anonymous conversations without the hassle of creating an account. Embrace the spontaneity of chat sessions with a unique user experience that doesn't require any mandatory registrations.
 
 ## Features
 
