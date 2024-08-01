@@ -26,7 +26,7 @@ const Header = () => {
 			)}
 			<a href="/">
 				<h1 className="text-2xl font-bold mx-2 text-white hover:text-white">
-					silly chat
+					Sneaky chat
 				</h1>
 			</a>
 		</header>
